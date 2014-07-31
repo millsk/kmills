@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from timeit import timeit
 
+
 class io:
    def task(self, message):
       print  message
@@ -40,6 +41,7 @@ class XDATCAR:
          for timestep in xrange(self.ntimesteps): #For timestep in remaining timesteps 
             for atom_type,atom_count in enumerate(self.count_atoms):
                for atom_index in range(atom_count):
+                  #print f[pointer]
                   if (not len(f[pointer])==0) and 0==sum( [1 if 'Direct' in i else 0 for i in f[pointer]]):
 #                     self.atom_array[atom_type].append([float(i) for i in f[pointer] ])
                      self.timestep_array[timestep][atom_type].append([float(i) for i in f[pointer] ])
@@ -125,6 +127,7 @@ class XDATCAR:
          zeros = np.zeros(np.shape(dr))
          dr=new=np.where(np.abs(dr)<0.5,zeros,np.where(dr<0,zeros+1,zeros-1))
          screen.status("Shifting derivative mask over time")
+         self.simpleplot(dr,range(len(dr)))
          for i in xrange(1,len(a) + 100):
             rolled = np.roll(dr,i,axis=0)
             rolled[0:i]=0
@@ -136,7 +139,8 @@ class XDATCAR:
             new = temp
          dr = new*self.v
          a = dr + a[1:]
-         """ #Just a sanity check...dont need it.
+         """
+          #Just a sanity check...dont need it.
          x = []
          y = []
          for i,data in enumerate(a):
@@ -167,9 +171,9 @@ class XDATCAR:
 
       def radialDistribution(self, a, tt):
          r = []
-         xh = self.v[0] / 2.0
-         yh = self.v[1] / 2.0
-         zh = self.v[2] / 2.0
+         R = []
+         xv = self.v[0]; yv = self.v[1]; zv = self.v[2]
+         xh = self.v[0] / 2.0; yh = self.v[1] / 2.0; zh = self.v[2] / 2.0
          for t in tt:
             print "Time={0}".format(t)
             for i,atom2 in enumerate(a[t]):
@@ -178,27 +182,21 @@ class XDATCAR:
                   dx = (atom2[0] - atom1[0])
                   dy = (atom2[1] - atom1[1])
                   dz = (atom2[2] - atom1[2])
-#   if dx > xh: dx = self.v[0] - dx
-                  if (dx < -xh):   dx = dx + xv
-                  if (dx > xh):    dx = dx - xv
-                  if (dy < -yh):   dy = dy + yv
-                  if (dy > yh):    dy = dy - yv
-                  if (dz < -zh):   dz = dz + zv
-                  if (dz > zh):    dz = dz - zv
-#   if dy > yh: dy = self.v[1] - dy
-#   if dz > zh: dz = self.v[2] - dz
+                  dx = dx - round(dx/xv)*xv
+                  dy = dy - round(dy/yv)*yv
+                  dz = dz - round(dz/zv)*zv
                   r.append(dx**2 + dy**2 + dz**2)
-         print min(r)
-         print np.sqrt(max(r))
          r = np.array(r)
          r = np.sqrt(r)
          r = r[ np.nonzero(r)]
-         print r
-         gr,bins = np.histogram(r,100)
-         print "!!!!!!!!!!!!!!"
-         print gr,bins
-         gr = gr/float(len(r))
-         return gr,bins
+
+         gr,R = np.histogram(r,100)
+         R = R**2 * 4./3.*3.1415926
+         R = np.diff(R)
+         print np.shape(gr), np.shape(R)
+
+
+         return gr,R
 
 
 
