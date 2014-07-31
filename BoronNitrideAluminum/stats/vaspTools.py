@@ -172,15 +172,22 @@ class XDATCAR:
          zh = self.v[2] / 2.0
          for t in tt:
             print "Time={0}".format(t)
-            for atom1 in a[t]:
-               for atom2 in a[t]:
-                  distance_x = abs(atom2[0] - atom1[0])
-                  distance_y = abs(atom2[1] - atom1[1])
-                  distance_z = abs(atom2[2] - atom1[2])
-                  if distance_x > self.v[0] / 2.0: distance_x = self.v[0] - distance_x
-                  if distance_y > self.v[1] / 2.0: distance_y = self.v[1] - distance_y
-                  if distance_z > self.v[2] / 2.0: distance_z = self.v[2] - distance_z
-                  r.append(distance_x**2 + distance_y**2 + distance_z**2)
+            for i,atom2 in enumerate(a[t]):
+               for j in range(i+1,len(a[t])):
+                  atom1 = a[t][j]
+                  dx = (atom2[0] - atom1[0])
+                  dy = (atom2[1] - atom1[1])
+                  dz = (atom2[2] - atom1[2])
+#   if dx > xh: dx = self.v[0] - dx
+                  if (dx < -xh):   dx = dx + xv
+                  if (dx > xh):    dx = dx - xv
+                  if (dy < -yh):   dy = dy + yv
+                  if (dy > yh):    dy = dy - yv
+                  if (dz < -zh):   dz = dz + zv
+                  if (dz > zh):    dz = dz - zv
+#   if dy > yh: dy = self.v[1] - dy
+#   if dz > zh: dz = self.v[2] - dz
+                  r.append(dx**2 + dy**2 + dz**2)
          print min(r)
          print np.sqrt(max(r))
          r = np.array(r)
@@ -188,6 +195,8 @@ class XDATCAR:
          r = r[ np.nonzero(r)]
          print r
          gr,bins = np.histogram(r,100)
+         print "!!!!!!!!!!!!!!"
+         print gr,bins
          gr = gr/float(len(r))
          return gr,bins
 
