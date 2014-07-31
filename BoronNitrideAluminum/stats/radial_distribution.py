@@ -20,7 +20,7 @@ xdat = XDATCAR.read('XDATCAR')
 
 r = xdat.numpynd_atoms('Al', 'all', coordformat="Cartesian" )
 stime = time.time()
-gr,bins = xdat.radialDistribution(r,range(500,600))
+gr,bins = xdat.radialDistribution(r,range(50,70))
 print "Time=", time.time()-stime
 
 fig = plt.figure()
