@@ -174,6 +174,7 @@ class XDATCAR:
          R = []
          xv = self.v[0]; yv = self.v[1]; zv = self.v[2]
          xh = self.v[0] / 2.0; yh = self.v[1] / 2.0; zh = self.v[2] / 2.0
+         natoms = len(a[0])
          for t in tt:
             print "Time={0}".format(t)
             for i,atom2 in enumerate(a[t]):
@@ -186,17 +187,26 @@ class XDATCAR:
                   dy = dy - round(dy/yv)*yv
                   dz = dz - round(dz/zv)*zv
                   r.append(dx**2 + dy**2 + dz**2)
+
          r = np.array(r)
          r = np.sqrt(r)
          r = r[ np.nonzero(r)]
+         gr, R = np.histogram(r,200)
+         gr = gr / len(R)
+         increment = R[1]-R[0]
 
-         gr,R = np.histogram(r,100)
-         R = R**2 * 4./3.*3.1415926
-         R = np.diff(R)
-         print np.shape(gr), np.shape(R)
+         vol = (4./3.) * np.pi * np.power(R,3)
+
+         vol = np.diff(vol)
+
+         rho = (natoms * len(tt))/(xv * yv * zv)  #number density
+         norm = 4. * np.pi * R[1:]**2 * rho * increment
+         
+         gr = gr / (norm) #         gr = gr / natomos
 
 
-         return gr,R
+
+         return gr,R[1:]
 
 
 
