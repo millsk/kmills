@@ -1,0 +1,32 @@
+SYSTEM = BN_workfunction_relax_HIGH
+NWRITE = 3  
+
+ISTART = 1   # 0=new, 1=wave, 2=same cutoff&latt (1&2 need WAVECAR file)
+ICHARG = 1   # 0=charge from wave, 1=charge from CHGCAR, 2=atom superpos.
+
+
+PREC=HIGH
+
+EDIFFG=-1e-05
+
+IALGO = 48
+LREAL = A  
+NELMIN = 4   
+BMIX = 2.0  
+MAXMIX = 50   
+
+IBRION = 2 #relax it   	# 0 do molecular dynamics 
+ISYM = 0    
+NSW = 20000 
+NBLOCK = 1
+KBLOCK = 100  
+
+LDIPOLE=.TRUE.
+LVTOT = .TRUE.
+
+
+NPAR=2
+POTIM = 0.5473119623468868  #timestep
+#ISMEAR = -1
+
+ISIF   = 2  # (2:force=y stress=y ions=y shape=n volume=n)

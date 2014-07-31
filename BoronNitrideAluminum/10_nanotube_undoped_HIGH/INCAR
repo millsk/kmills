@@ -1,0 +1,30 @@
+SYSTEM = nanotube_w_Al_relax
+NWRITE = 3  
+
+ISTART = 0   # 0=new, 1=wave, 2=same cutoff&latt (1&2 need WAVECAR file)
+ICHARG = 2   # 0=charge from wave, 1=charge from CHGCAR, 2=atom superpos.
+
+
+PREC=LOW
+
+IALGO = 48
+LREAL = A  
+NELMIN = 4   
+BMIX = 2.0  
+MAXMIX = 50
+
+IBRION = 2     	# 0 for molecular dynamics , 2 for relaxation
+ISYM = 0    
+NSW = 20000  #Only do 150 steps so it doesn't freeze 
+NBLOCK = 1 
+KBLOCK = 100  
+
+NPAR=80
+
+#SMASS = 0.5        # mass of the thermostat
+POTIM = 0.5473119623468868  #timestep
+#TEBEG = 1400     # start temperature
+#ISMEAR = -1
+#SIGMA = 0.120642653  #1400 K in eV  
+
+ISIF   = 2  # (2:force=y stress=y ions=y shape=n volume=n)
