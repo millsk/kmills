@@ -1,17 +1,17 @@
 #!/usr/bin/python
 import matplotlib.pyplot as plt
 from vaspTools import XDATCAR
-import mpltools.style as mplstyle
+#import mpltools.style as mplstyle
 import time
 import numpy as np
-mplstyle.use('ggplot')
+#mplstyle.use('ggplot')
 
-xdat = XDATCAR.read('XDATCAR_test')
+xdat = XDATCAR.read('XDATCAR')
 #r = xdat.numpynd_atoms('Al', 'all',   coordformat="Cartesian" )
 #xdat.animate_xy_projection(r,True)
 r = xdat.numpynd_atoms('Al', 'all', coordformat="Cartesian" )
 stime = time.time()
-gr,bins = xdat.radialDistribution_np(r,range(2,300))
+gr,bins = xdat.radialDistribution_np(r,range(xdat.ntimesteps))
 print "Time=", time.time()-stime
 fig = plt.figure()
 ax = fig.add_subplot(111)
