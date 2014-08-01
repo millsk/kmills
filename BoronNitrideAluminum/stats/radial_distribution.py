@@ -11,7 +11,7 @@ xdat = XDATCAR.read('XDATCAR_test')
 #xdat.animate_xy_projection(r,True)
 r = xdat.numpynd_atoms('Al', 'all', coordformat="Cartesian" )
 stime = time.time()
-gr,bins = xdat.radialDistribution(r,range(2,200))
+gr,bins = xdat.radialDistribution_np(r,range(2,300))
 print "Time=", time.time()-stime
 fig = plt.figure()
 ax = fig.add_subplot(111)
