@@ -169,6 +169,39 @@ class XDATCAR:
          a = np.hstack((a,a+[0,0,self.lattice_z],a-[0,0,self.lattice_z]))
          return a
 
+
+      def radialDistribution_np(self, a, tt):
+         r = []
+         natoms = len(a[0])
+         xv = self.v[0]; yv = self.v[1]; zv = self.v[2]
+         latt = np.array(self.v)
+         atoms1 = np.repeat(a, natoms, axis=1)  #ie: a1,a1,a1,a2,a2,a2...an,an,an .
+         atoms2 = np.hstack( (a,)*natoms )      #ie: a1,a2,an,a1,a2,an,a1,a2,an
+         diff = atoms2-atoms1
+         diff = diff - np.round(diff / latt) * latt
+         diff = diff**2
+         diff = np.sum(diff,axis=2).flatten()
+         diff = np.sqrt(diff[np.nonzero(diff)])
+         gr, R = np.histogram(diff, 200)
+         ra=R
+         rb=np.roll(R,1)
+#         R = R[1:]
+
+         dr = np.diff(R)
+
+         V = 4./3.*np.pi*( ra**3 - rb**3)
+
+         cube_norm = np.array( [ (i+1)**3 - i**3  for i in range(len(dr)) ])
+        # gr = xv*yv*zv * gr/(V[1:])  /  natoms**2 #   /  len(tt)
+         gr = gr / len(tt)
+         rho = natoms / (xv*yv*zv)
+         #gr /=  4.*np.pi/3. * dr**3 * rho * cube_norm
+         gr = gr/V[1:]
+
+
+         return gr,R[1:]
+
+
       def radialDistribution(self, a, tt):
          r = []
          R = []
@@ -190,7 +223,7 @@ class XDATCAR:
 
          r = np.array(r)
          r = np.sqrt(r)
-         r = r[ np.nonzero(r)]
+#         r = r[ np.nonzero(r)]
          gr, R = np.histogram(r,200)
          gr = gr / len(R)
          increment = R[1]-R[0]
@@ -201,14 +234,13 @@ class XDATCAR:
 
          rho = (natoms * len(tt))/(xv * yv * zv)  #number density
          norm = 4. * np.pi * R[1:]**2 * rho * increment
-         
-         gr = gr / (norm) #         gr = gr / natomos
 
+
+         gr = gr / (norm) #         gr = gr / natomos
+#         gr = gr / (vol*increment)
 
 
          return gr,R[1:]
-
-
 
 
 
