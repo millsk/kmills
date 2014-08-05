@@ -162,7 +162,6 @@ class XDATCAR:
          return np.mean(distance,axis=1)
 
       def periodic_copy(self,a):
-         print np.shape(a)
          screen.task("Copying atoms to adjacent cells (PBC)")
          a = np.hstack((a,a+[self.lattice_x,0,0],a-[self.lattice_x,0,0]))
          a = np.hstack((a,a+[0,self.lattice_y,0],a-[0,self.lattice_y,0]))

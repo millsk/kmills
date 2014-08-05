@@ -21,7 +21,7 @@ wrap_in=False
 lattice_constant = 1.446
 
 try:
-   opts, args = getopt.getopt(sys.argv[1:], 'z:t:w',["zrange=","trange=",])
+   opts, args = getopt.getopt(sys.argv[1:], 'z:t:w',["zrange=","trange=","wrap="])
 except getopt.GetoptError:
    print "ARGUMENT ERROR: invalid",opts,"given"
    sys.exit(2)
