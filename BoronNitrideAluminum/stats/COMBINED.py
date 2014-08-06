@@ -6,8 +6,8 @@ import time
 import numpy as np
 import os
 mplstyle.use('ggplot')
-xdat = XDATCAR.read('XDATCAR')
 
+xdat = XDATCAR.read("XDATCAR")
 
 ####################################
 #HISTOGRAM OPTIONS
@@ -29,7 +29,6 @@ ax.set_xlabel("Time, $t$  $(\\times 0.543\\mathrm{fs})$")
 ax.set_title("Mean squared displacement of Aluminum")
 plt.plot(msd)
 plt.savefig('msd.png')
-
 
 #g(r) - Radial Distribution
 gr,bins = xdat.radialDistribution_np(r,range(xdat.ntimesteps))
@@ -104,5 +103,4 @@ ax.set_ylabel("Probability")
 plt.plot(bins[1:],n_z/len(Aluminums[:,2]))
 
 plt.savefig('zdistribution.png')
-
 
