@@ -1,15 +1,7 @@
 #!/usr/bin/python
 
-mean_square_displacement=False
-radial_distribution=False
-
-
-
-
-
-
-
-
+mean_square_displacement=True
+radial_distribution=True
 
 import matplotlib.pyplot as plt
 from vaspTools import XDATCAR
@@ -26,10 +18,10 @@ rng = xrange(len(xdat))
 
 ####################################
 #HISTOGRAM OPTIONS
-plot_ts_range = [0,10000]
-plot_z_range = [-100,100]
+plot_ts_range = [200,100000]
+plot_z_range = [-1000,1000]
 plot_aluminums=False
-hist_res = 27*3 #number of histogram bins along each axis
+hist_res = 28*3 #number of histogram bins along each axis
 wrap_in=False #copy all aluminums periodically in space (data garbage if lattice not symmetric)
 lattice_constant = 1.446
 #####################################
@@ -48,20 +40,20 @@ if mean_square_displacement:
       plt.plot(msd[i])
    plt.savefig('msd.png')
 
-
-#g(r) - Radial Distribution
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.set_ylabel("Radial Distribution $g(r)$")
-ax.set_xlabel("Distance, angstroms")
-ax.set_title("Radial Distribution")
-ax.set_xlim([0,6.0])
-ax.set_ylim([0,5.0])
-ax.axvline(x=2.6)
-for i in rng:
-   gr,bins = xdat[i].radialDistribution_np(r[i],range(xdat[i].ntimesteps))
-   plt.plot(bins,gr)
-plt.savefig('radialDistribution.png')
+if radial_distribution:
+   #g(r) - Radial Distribution
+   fig = plt.figure()
+   ax = fig.add_subplot(111)
+   ax.set_ylabel("Radial Distribution $g(r)$")
+   ax.set_xlabel("Distance, angstroms")
+   ax.set_title("Radial Distribution")
+   ax.set_xlim([0,6.0])
+   ax.set_ylim([0,5.0])
+   ax.axvline(x=2.6)
+   for i in rng:
+      gr,bins = xdat[i].radialDistribution_np(r[i],range(xdat[i].ntimesteps))
+      plt.plot(bins,gr)
+   plt.savefig('radialDistribution.png')
 
 lenss = []
 n_z =[]
@@ -69,11 +61,10 @@ z_bins=[]
 for iii in rng:
 
 #Spatial Distribution (x,y)
-   Nitrogens = xdat[iii].numpy_atoms('N', [0], coordformat="Cartesian" )
-   Borons    = xdat[iii].numpy_atoms('B', [0], coordformat="Cartesian" )
-   Aluminums = xdat[iii].numpy_atoms('Al', 'all', coordformat="Cartesian" )
+   Nitrogens = xdat[iii].numpy_atoms('N', timesteps = [0], coordformat="Cartesian" )
+   Borons    = xdat[iii].numpy_atoms('B', timesteps = [0], coordformat="Cartesian" )
+   Aluminums = xdat[iii].numpy_atoms('Al', range(plot_ts_range[0], plot_ts_range[1] ) ,coordformat="Cartesian" )
    if wrap_in:
-      print "Wrapping..."
       temp = Aluminums
       for dx in range(1,int(round(xdat[iii].v[0] / (3*lattice_constant),0))):
          temp = np.vstack((temp, np.add(Aluminums,[lattice_constant*dx*3,0,0])))
@@ -86,7 +77,7 @@ for iii in rng:
       Aluminums[Aluminums[:,1]>xdat[iii].v[1]]-=[0,xdat[iii].v[1],0]
 
 
-
+   Aluminums = Aluminums[(Aluminums[:,2]>plot_z_range[0]) & (Aluminums[:,2]<plot_z_range[1]   )]
    fig = plt.figure() #figsize=(6*1.5,4*1.5))
    ax = fig.add_subplot(111)  #subplot2grid((1, 15), (0, 0), colspan = 12)
 
