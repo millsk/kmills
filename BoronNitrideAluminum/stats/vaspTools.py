@@ -51,6 +51,7 @@ class XDATCAR:
          self.lattice_x = self.v[0]
          self.lattice_y = self.v[1]
          self.lattice_z = self.v[2]
+         screen.status(str(self.ntimesteps) + " timesteps found in file")
          self.unwrapped_coords = "not unwrapped"
          f = "nothing"
 
@@ -70,6 +71,10 @@ class XDATCAR:
             indices=range(self.count_atoms[atom_type])
          if timesteps[0]=='A' or timesteps[0]=='a':
             timesteps = range(self.ntimesteps)
+#         print timesteps
+         timesteps = np.array(timesteps)
+         timesteps = timesteps[ (timesteps >=0) & (timesteps < (self.ntimesteps-1)) ]
+ #        print timesteps
          return_list = []
          for t in timesteps:
             for i in indices:
@@ -88,6 +93,10 @@ class XDATCAR:
             indices=range(self.count_atoms[atom_type])
          if timesteps[0]=='A' or timesteps[0]=='a':
             timesteps = range(self.ntimesteps)
+         #print timesteps
+         timesteps = np.array(timesteps)
+         timesteps = timesteps[ (timesteps >=0) & (timesteps < (self.ntimesteps-1)) ]
+#         print timesteps
          stime = time.time()
          array = np.zeros(shape=(len(timesteps),len(indices),3))
          screen.task("Filling multidimensional array")
@@ -127,7 +136,7 @@ class XDATCAR:
          zeros = np.zeros(np.shape(dr))
          dr=new=np.where(np.abs(dr)<0.5,zeros,np.where(dr<0,zeros+1,zeros-1))
          screen.status("Shifting derivative mask over time")
-         self.simpleplot(dr,range(len(dr)))
+         #self.simpleplot(dr,range(len(dr)))
          for i in xrange(1,len(a) + 100):
             rolled = np.roll(dr,i,axis=0)
             rolled[0:i]=0
@@ -139,16 +148,6 @@ class XDATCAR:
             new = temp
          dr = new*self.v
          a = dr + a[1:]
-         """
-          #Just a sanity check...dont need it.
-         x = []
-         y = []
-         for i,data in enumerate(a):
-            x.append(i)
-            y.append(data[73][0]) #I know that atom 73 of test file needs wrapped
-            print data[73]
-         self.simpleplot(x,y)
-         """
          self.unwrap_time = time.time()-stime
          self.unwrapped_coords = a
          screen.status("Unwrapped in "+str(self.unwrap_time)+"s")
@@ -157,7 +156,9 @@ class XDATCAR:
       def msd(self, a):
          r = self.unwrap(a) #unwrap the coordinates
          screen.task("Calculating mean-square displacement")
-         delta_r = r-r[0] #(r[0]-COM[0])-(r-COM)
+#         COM = np.mean(r,axis=1)
+         delta_r = r - r[0] #-COM + COM[0] #(r[0]-COM[0])-(r-COM)
+#         delta_r = delta_r
          distance = np.sum(delta_r**2,axis=2)
          return np.mean(distance,axis=1)
 
@@ -169,7 +170,8 @@ class XDATCAR:
          return a
 
 
-      def radialDistribution_np(self, a, tt):
+      def radialDistribution_np(self, a, tt, nbins=1000):
+         screen.task("Calculating radial distribution")
          natoms = len(a[0])
          xv = self.v[0]; yv = self.v[1]; zv = self.v[2]
          latt = np.array(self.v)
@@ -179,7 +181,6 @@ class XDATCAR:
          dist = np.sum((dist - np.round(dist / latt) * latt)**2, axis=2).flatten()
          #Take the sqrt of the non-zero elements.
          dist = np.sqrt(dist[np.nonzero(dist)])
-         nbins = 10000  #number of histogram bins to use
          #Make the histogram.  density=True normalises it.
          gr, R = np.histogram(dist, nbins, density=True)
          R = R[:-1]
