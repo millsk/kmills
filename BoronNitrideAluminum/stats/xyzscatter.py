@@ -55,32 +55,39 @@ for iii in rng:
 
 
 
+   stretch=5
    fig = plt.figure(figsize=(6*1.5,4*1.5))
    ax = fig.add_subplot(111)
 
    print len(allN)
    print len(allB)
 
-   toPlot = np.append(allN,-allB)
-   toPlot = allN
+   toPlot = np.append(bond_length - allN,   -(bond_length-allB))
+#   toPlot = allN
    toPlotZ = np.append(allNz,allBz)
-   toPlotZ = allNz
-   heatmap, xedges, yedges = np.histogram2d(toPlot,toPlotZ, bins=int(200))
-   extent = [-lattice_constant*5,lattice_constant*5,0,10]
+ #  toPlotZ = allNz
+   heatmapN, xedgesN,yedgesN = np.histogram2d(allN,allNz, bins=60)
+   heatmapB, xedgesB, yedgesB = np.histogram2d(allB,allBz, bins=60)
+   extentB = [0,lattice_constant*stretch,0,10]
+   extentN = [-lattice_constant*stretch,0,0,10]
+
 #   extent = [min(xedges),max(xedges),min(yedges),max(yedges) ]
 
 
-   ax.imshow(heatmap.T,extent=extent, cmap=plt.get_cmap('YlGnBu'), origin='lower',alpha=1.0)
+   ax.imshow(np.fliplr(heatmapB.T),extent=extentB, cmap=plt.get_cmap('YlGnBu_r'), origin='lower',alpha=1.0)
+   ax.imshow(heatmapN.T,extent=extentN, cmap=plt.get_cmap('YlGnBu_r'), origin='lower',alpha=1.0)
+   ax.axvline(x=0, c='k', linewidth=10)
 #   ax.scatter(allN,  allNz,  c='g',s=25, zorder=100, alpha=0.7)
 #   ax.scatter(-allB, allBz, c='y',s=25, zorder=100, alpha=0.7)
 
+
    ax.grid(False)
-#   ax.set_xticks([-lattice_constant, 0, lattice_constant])
-#   ax.set_xticklabels(["B","","N"])
+   ax.set_xticks([-lattice_constant*stretch, 0, lattice_constant*stretch])
+   ax.set_xticklabels(["B","0","N"])
    plt.figtext(0.7,0.01,str(len(toPlot))+" total Al atoms",zorder=10000)
-   ax.set_title("Spatial distribution in $x$ and $y$")
-   ax.set_xlabel('$x$')
-   ax.set_ylabel('$y$')
+   ax.set_title("Spatial distribution")
+   ax.set_xlabel('Distance from lattice atom (Nitrogen on left)')
+   ax.set_ylabel('$z$')
 
    plt.savefig('spatial_distribution_{0}.png'.format(infilelist[iii]) )
 
