@@ -27,7 +27,7 @@ for iii in rng:
    allNz =  np.array([])
    allBz =  np.array([])
 
-   for t in xrange(xdat[iii].ntimesteps):
+   for t in range(0,10): #xrange(xdat[iii].ntimesteps):
       Nitrogens = xdat[iii].numpy_atoms('N', [t], coordformat="Cartesian" )
       Borons    = xdat[iii].numpy_atoms('B', [t], coordformat="Cartesian" )
       Aluminums = xdat[iii].numpy_atoms('Al', [t], coordformat="Cartesian" )
@@ -42,7 +42,7 @@ for iii in rng:
       distanceN = spdist.cdist(projN,projA).flatten() #calculate the distance from every Nitro to every aluminum
 
 
-      innt = 1.0
+      innt = 0.5
       cutoff = bond_length*innt
       #remove any data points that are further from lattice atom than 1/2 lattice constant
       zAB = zAB[distanceB<cutoff]
@@ -57,40 +57,51 @@ for iii in rng:
       allBz = np.append(allBz,zAB)
 
 
-   stretch=5
    fig = plt.figure(figsize=(6*1.5,4*1.5))
    ax = fig.add_subplot(111)
 
-
-   heatmapN, xedgesN,yedgesN = np.histogram2d(allN, allNz, bins=100)
-   heatmapB, xedgesB,yedgesB = np.histogram2d(allB, allBz, bins=100)
+   heatmapN, xedgesN,yedgesN = np.histogram2d(allN, allNz, bins=50)
+   heatmapB, xedgesB,yedgesB = np.histogram2d(-allB, allBz, bins=50)
 
    TB = abs(xedgesN[1] - xedgesN[0]) #"thickness" of boron bins
    TN = abs(xedgesB[1] - xedgesB[0]) #thickness of nitrogen bins
    normN = np.abs(np.pi * (2.0*xedgesN * TN - TN**2)) #area of annulus of thickness TN and inner radius xedgesN
    normB = np.abs(np.pi * (2.0*xedgesB * TB - TB**2))
-   extentN = [0 ,bond_length,0,10]
-   extentB = [-bond_length,0,0,10]
-
-   heatmapN = np.swapaxes(np.swapaxes(heatmapN,0,1)/(normN[:-1]),0,1)
-   heatmapB = np.swapaxes(np.swapaxes(heatmapB,0,1)/(normB[:-1]),0,1)
-   ax.imshow(heatmapN.T,extent=extentN, cmap=plt.get_cmap('YlGnBu'), origin='lower',alpha=1.0, aspect='auto')
-   ax.imshow(heatmapB.T,extent=extentB, cmap=plt.get_cmap('YlGnBu_r'), origin='lower',alpha=1.0, aspect='auto')
+   extentN = [0,max(xedgesN),0,max(yedgesN)]
+   extentB = [min(xedgesB), 0,0,max(yedgesB)]
 
 
+   heatmapN = np.swapaxes(np.swapaxes(heatmapN,0,1)/(normN[1:]),0,1)
+   heatmapB = np.swapaxes(np.swapaxes(heatmapB,0,1)/(normB[1:]),0,1)
 
+   absolute_max=max([np.max(heatmapN),np.max(heatmapB)]) / 25.
+   absolute_min=min([np.min(heatmapN),np.min(heatmapB)])
+
+   print np.max(heatmapN)
+   print np.max(heatmapB)
+   print np.min(heatmapN)
+   print np.min(heatmapB)
+
+   print absolute_max
+   print absolute_min
+   ax.imshow(heatmapN.T,extent=extentN, cmap=plt.get_cmap('YlGnBu'), origin='lower',alpha=1.0, aspect='auto',vmin=absolute_min,vmax=absolute_max)
+   ax.imshow(heatmapB.T,extent=extentB, cmap=plt.get_cmap('YlGnBu'), origin='lower',alpha=1.0, aspect='auto',vmin=absolute_min,vmax=absolute_max)
+
+
+#   ax.imshow(heatmapN.T,extent=extentN, cmap=plt.get_cmap('YlGnBu_r'), origin='lower',alpha=1.0, aspect='auto')
+#   ax.imshow(np.fliplr(heatmapB.T),extent=extentB, cmap=plt.get_cmap('YlGnBu_r'), origin='lower',alpha=1.0, aspect='auto')
 
 
    ax.grid(False)
-#   ax.set_xlim([0,1])
-#   ax.set_xticks([-lattice_constant*stretch, 0, lattice_constant*stretch])
-#   ax.set_xticklabels(["lv/2","B  N","lv/2"])
+   ax.set_xlim([-cutoff,cutoff])
+   ax.set_xticks([-cutoff,-cutoff/2.,0,cutoff/2.,cutoff])
+   ax.set_xticklabels(["1/2","1/4","B\ \ \ \ \ \ \ \ N","1/4","1/2"])
 
    plt.figtext(0.7,0.01,str(len(allBz))+" total Al atoms",zorder=10000)
    ax.set_title("Spatial distribution")
-   ax.set_xlabel('Distance from lattice atom (Nitrogen on left)')
+   ax.set_xlabel('Distance from lattice atom (units of B-N bond length))')
    ax.set_ylabel('$z$')
-
+   ax.axvline(x=0,linewidth=2.,c='k')
    plt.savefig('spatial_distribution_{0}.png'.format(infilelist[iii]) )
 
 
