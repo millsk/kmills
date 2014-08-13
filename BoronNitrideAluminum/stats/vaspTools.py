@@ -73,7 +73,10 @@ class XDATCAR:
             timesteps = range(self.ntimesteps)
 #         print timesteps
          timesteps = np.array(timesteps)
-         timesteps = timesteps[ (timesteps >=0) & (timesteps < (self.ntimesteps-1)) ]
+         timesteps = timesteps[ (timesteps >=0) & (timesteps < (self.ntimesteps)) ]
+         if len(timesteps)==0:
+            screen.warning("No timesteps in returned array")
+            return np.array([])
  #        print timesteps
          return_list = []
          for t in timesteps:
