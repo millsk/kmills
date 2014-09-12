@@ -10,6 +10,7 @@ using namespace std;
 
 typedef TiXmlElement tag;
 
+
 int str2int(string ss){
    stringstream strValue;
    strValue << ss;
