@@ -11,6 +11,8 @@ using namespace std;
 typedef TiXmlElement tag;
 
 
+
+
 int str2int(string ss){
    stringstream strValue;
    strValue << ss;
@@ -19,9 +21,7 @@ int str2int(string ss){
    return intValue;
 }
 
-void parse_atomtypes_tag(tag* atomtypesTag){
-   cout << "<pppParse!";
-
+void parse_atomtypes_tag(tag* atomtypesTag, FileInfo *vasprun ){
    for (tag* level1 = atomtypesTag->FirstChildElement(); level1 != NULL; level1=level1->NextSiblingElement()) {
       if (0==strcmp(level1->Value(),"set")) {
          for (tag* rc = level1->FirstChildElement(); rc != NULL; rc = rc->NextSiblingElement()) {
@@ -39,15 +39,15 @@ void parse_atomtypes_tag(tag* atomtypesTag){
                } else if (fieldcounter==4) {
                   atomTypeData.pseudopotential = c->FirstChild()->ToText()->Value();
                }
-               fieldcounter++;
-//            vasprun->atom_types.push_back(atomTypeData);
-            }
-
-
+               fieldcounter++; 
+               }
+               vasprun->atom_types.push_back(atomTypeData);
          }
       }
    }
 }
+
+
 
 //int readXML(FileInfo& info) {
 int readXML(FileInfo *vasprun) {
@@ -70,17 +70,49 @@ int readXML(FileInfo *vasprun) {
                      vasprun->numtypes = str2int(level3->FirstChild()->ToText()->Value());
                   } else if (0==strcmp(level3->Value(),"array")) {
                      if (0==strcmp(level3->Attribute("name"), "atomtypes")) {
-                        parse_atomtypes_tag(level3);
+                        parse_atomtypes_tag(level3, vasprun);
                      }
                   }
                }
+            } else if (0==strcmp(level2->Value(),"structure")){
+               if (0==strcmp(level2->Attribute("name"),"initialpos")) {
+                  for (tag* level3 = level2->FirstChildElement(); level3 != NULL; level3 = level3->NextSiblingElement()) {
+                     if (0==strcmp(level3->Value(),"crystal")) {
+                        for (tag* level4 = level3->FirstChildElement(); level4 != NULL; level4 = level4->NextSiblingElement()) {
+                           if (0==strcmp(level4->Value(),"varray")) {
+                              if (0==strcmp(level4->Attribute("name"),"basis")) {
+                                 cout << "I'm in basis" <<endl;
+                                 int fieldcounter=0;
+                                 for (tag* v = level4->FirstChildElement(); v!=NULL; v = v->NextSiblingElement()) {
+                                    //string s = v->FirstChild()->ToText()->Value();
+                                    //istringstream iss(s);
+                                    //while (iss) {
+                                      string sub;
+                                    //   iss >> sub;
+                                    //   vasprun->latt_x.push_back(stod(sub)) ; // >> vasprun->latt_y >> vasprun->latt_z ;
+                                    // }
+                                    // fieldcounter++;
+                                 }
+                              }
+                           }
+                        }
+                     }
+}              
+               }
+               
             }
+                
          }
       } 
    }
 
    cout << "Number of atoms: " << vasprun->numatoms << endl;
    cout << "Number of atom types: " << vasprun->numtypes << endl;
+   for (int i =0; i<vasprun->numtypes; i++) {
+      cout << "\tThere are " << vasprun->atom_types[i].atomspertype << " " << vasprun->atom_types[i].element << " atoms each with mass " 
+           << vasprun->atom_types[i].mass << " and " << vasprun->atom_types[i].valence 
+           << " valence electrons.\n\t\t--> The " << vasprun->atom_types[i].pseudopotential << " pseudopotential was used."  << endl;
+   }
 }
 
 
