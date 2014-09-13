@@ -47,7 +47,9 @@ void parse_atomtypes_tag(tag* atomtypesTag, FileInfo *vasprun ){
    }
 }
 
-
+bool update_3d_vector(vector<double>* objectToUpdate, float x, float y, float z) {
+   (*objectToUpdate)[0] = x;  (*objectToUpdate)[1] = y; (*objectToUpdate)[2] = z;
+}
 
 //int readXML(FileInfo& info) {
 int readXML(FileInfo *vasprun) {
@@ -81,17 +83,19 @@ int readXML(FileInfo *vasprun) {
                         for (tag* level4 = level3->FirstChildElement(); level4 != NULL; level4 = level4->NextSiblingElement()) {
                            if (0==strcmp(level4->Value(),"varray")) {
                               if (0==strcmp(level4->Attribute("name"),"basis")) {
-                                 cout << "I'm in basis" <<endl;
-                                 int fieldcounter=0;
+                                 int dimension=1; //are we looking at x, y, or z vector?
                                  for (tag* v = level4->FirstChildElement(); v!=NULL; v = v->NextSiblingElement()) {
-                                    //string s = v->FirstChild()->ToText()->Value();
-                                    //istringstream iss(s);
-                                    //while (iss) {
-                                      string sub;
-                                    //   iss >> sub;
-                                    //   vasprun->latt_x.push_back(stod(sub)) ; // >> vasprun->latt_y >> vasprun->latt_z ;
-                                    // }
-                                    // fieldcounter++;
+                                    float x,y,z;
+                                    cout << v->FirstChild()->ToText()->Value() << endl;
+                                    sscanf(v->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
+                                    if (dimension==1){
+                                       update_3d_vector(&vasprun->latt_x, x,y,z);
+                                    } else if (dimension == 2) {
+                                       update_3d_vector(&vasprun->latt_y, x,y,z);
+                                    } else if (dimension ==3) {
+                                       update_3d_vector(&vasprun->latt_z, x,y,z);
+                                    }
+                                    dimension++;
                                  }
                               }
                            }
@@ -113,6 +117,14 @@ int readXML(FileInfo *vasprun) {
            << vasprun->atom_types[i].mass << " and " << vasprun->atom_types[i].valence 
            << " valence electrons.\n\t\t--> The " << vasprun->atom_types[i].pseudopotential << " pseudopotential was used."  << endl;
    }
+
+   cout << "The x lattice vector is <" << vasprun->latt_x[0] << ", " << vasprun->latt_x[1] << ", " << vasprun->latt_x[2] << ">." <<endl;
+   cout << "The y lattice vector is <" << vasprun->latt_y[0] << ", " << vasprun->latt_y[1] << ", " << vasprun->latt_y[2] << ">." <<endl;
+   cout << "The z lattice vector is <" << vasprun->latt_z[0] << ", " << vasprun->latt_z[1] << ", " << vasprun->latt_z[2] << ">." <<endl;
+
+
+
+
 }
 
 
