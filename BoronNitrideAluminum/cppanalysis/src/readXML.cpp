@@ -56,10 +56,12 @@ int readXML(FileInfo *vasprun) {
    int timestep_counter = 0;
    TiXmlDocument doc;
 //   if (doc.LoadFile(info.input_filename.c_str())) {
+   cout << "Loading file into memory" << endl;
    if (!doc.LoadFile(vasprun->input_filename.c_str())) {
       cerr << doc.ErrorDesc() << endl;
       return 0;
    }
+   cout << "File Loaded. Beginning to parse" <<endl;
   
 
    for (tag* level1 = doc.FirstChildElement(); level1 != NULL; level1 = level1->NextSiblingElement()) {
@@ -105,39 +107,30 @@ int readXML(FileInfo *vasprun) {
                }
             } else if (0==strcmp(level2->Value(),"calculation")) {
                TimeStep thisStep;
-               for (tag* level3 = level2->FirstChildElement("structure"); level3 != NULL; level3 = level3->NextSiblingElement()) {
-                  for (tag* level4 = level3->FirstChildElement("varray"); level4 != NULL; level4 = level4->NextSiblingElement()) {
-                     if (0==strcmp(level4->Attribute("name"),"positions")) {
-                        for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
-                           float x,y,z;
-                           vector<float> r;
-                           sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
-                           r.push_back(x);
-                           r.push_back(y);
-                           r.push_back(z);
-                           thisStep.ppp.push_back(r);
-                        }
-                     } else if (0==strcmp(level4->Attribute("name"),"velocities")) {
-                        for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
-                           float x,y,z;
-                           vector<float> r;
-                           sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
-                           r.push_back(x);
-                           r.push_back(y);
-                           r.push_back(z);
-                           thisStep.vvv.push_back(r);
-                        }
-
-                     } else if (0==strcmp(level4->Attribute("name"),"forces")) {
-                        for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
-                           float x,y,z;
-                           vector<float> r;
-                           sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
-                           r.push_back(x);
-                           r.push_back(y);
-                           r.push_back(z);
-                           thisStep.fff.push_back(r);
-                        }
+               for (tag* level3 = level2->FirstChildElement(); level3 != NULL; level3 = level3->NextSiblingElement()) {
+                  if (0==strcmp(level3->Value(),"structure")) {
+                     for (tag* level4 = level3->FirstChildElement("varray"); level4 != NULL; level4 = level4->NextSiblingElement()) {
+                        if (0==strcmp(level4->Attribute("name"),"positions")) {
+                           for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
+                              float x,y,z;
+                              vector<float> r;
+                              sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
+                              r.push_back(x);
+                              r.push_back(y);
+                              r.push_back(z);
+                              thisStep.ppp.push_back(r);
+                           }
+                        } 
+                     }  
+                  } else if (0==strcmp(level3->Value(),"varray") && 0==strcmp(level3->Attribute("name"),"forces")) {
+                     for (tag* vec = level3->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
+                        float x,y,z;
+                        vector<float> r;
+                        sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
+                        r.push_back(x);
+                        r.push_back(y);
+                        r.push_back(z);
+                        thisStep.fff.push_back(r);
                      }
                   }
                }
@@ -163,8 +156,7 @@ int readXML(FileInfo *vasprun) {
    cout << "The timesteps vector is " << vasprun->timesteps.size() << " elements long" << endl;
    cout << "For timestep 0 (the first timestep):" <<endl;
    cout << "\tThere are "<<vasprun->timesteps[0].ppp.size() << " position vectors." << endl;
-   cout << "\tThere are "<<vasprun->timesteps[0].vvv.size() << " position vectors." << endl;
-   cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " position vectors." << endl;
+   cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " force vectors." << endl;
 
 
 }
