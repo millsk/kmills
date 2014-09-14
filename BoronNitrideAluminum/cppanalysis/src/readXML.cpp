@@ -53,6 +53,7 @@ bool update_3d_vector(vector<double>* objectToUpdate, float x, float y, float z)
 
 //int readXML(FileInfo& info) {
 int readXML(FileInfo *vasprun) {
+   int timestep_counter = 0;
    TiXmlDocument doc;
 //   if (doc.LoadFile(info.input_filename.c_str())) {
    if (!doc.LoadFile(vasprun->input_filename.c_str())) {
@@ -86,7 +87,6 @@ int readXML(FileInfo *vasprun) {
                                  int dimension=1; //are we looking at x, y, or z vector?
                                  for (tag* v = level4->FirstChildElement(); v!=NULL; v = v->NextSiblingElement()) {
                                     float x,y,z;
-                                    cout << v->FirstChild()->ToText()->Value() << endl;
                                     sscanf(v->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
                                     if (dimension==1){
                                        update_3d_vector(&vasprun->latt_x, x,y,z);
@@ -101,11 +101,49 @@ int readXML(FileInfo *vasprun) {
                            }
                         }
                      }
-}              
+                  }              
                }
-               
+            } else if (0==strcmp(level2->Value(),"calculation")) {
+               TimeStep thisStep;
+               for (tag* level3 = level2->FirstChildElement("structure"); level3 != NULL; level3 = level3->NextSiblingElement()) {
+                  for (tag* level4 = level3->FirstChildElement("varray"); level4 != NULL; level4 = level4->NextSiblingElement()) {
+                     if (0==strcmp(level4->Attribute("name"),"positions")) {
+                        for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
+                           float x,y,z;
+                           vector<float> r;
+                           sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
+                           r.push_back(x);
+                           r.push_back(y);
+                           r.push_back(z);
+                           thisStep.ppp.push_back(r);
+                        }
+                     } else if (0==strcmp(level4->Attribute("name"),"velocities")) {
+                        for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
+                           float x,y,z;
+                           vector<float> r;
+                           sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
+                           r.push_back(x);
+                           r.push_back(y);
+                           r.push_back(z);
+                           thisStep.vvv.push_back(r);
+                        }
+
+                     } else if (0==strcmp(level4->Attribute("name"),"forces")) {
+                        for (tag* vec = level4->FirstChildElement("v"); vec !=NULL; vec = vec->NextSiblingElement()) {
+                           float x,y,z;
+                           vector<float> r;
+                           sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
+                           r.push_back(x);
+                           r.push_back(y);
+                           r.push_back(z);
+                           thisStep.fff.push_back(r);
+                        }
+                     }
+                  }
+               }
+               vasprun->timesteps.push_back(thisStep);
+               timestep_counter++;          
             }
-                
          }
       } 
    }
@@ -122,7 +160,11 @@ int readXML(FileInfo *vasprun) {
    cout << "The y lattice vector is <" << vasprun->latt_y[0] << ", " << vasprun->latt_y[1] << ", " << vasprun->latt_y[2] << ">." <<endl;
    cout << "The z lattice vector is <" << vasprun->latt_z[0] << ", " << vasprun->latt_z[1] << ", " << vasprun->latt_z[2] << ">." <<endl;
 
-
+   cout << "The timesteps vector is " << vasprun->timesteps.size() << " elements long" << endl;
+   cout << "For timestep 0 (the first timestep):" <<endl;
+   cout << "\tThere are "<<vasprun->timesteps[0].ppp.size() << " position vectors." << endl;
+   cout << "\tThere are "<<vasprun->timesteps[0].vvv.size() << " position vectors." << endl;
+   cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " position vectors." << endl;
 
 
 }
