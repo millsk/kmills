@@ -16,7 +16,16 @@ struct atomType {
    }
 }; 
 
+typedef vector<float> threevector;
 
+
+struct TimeStep {
+   vector<threevector> ppp;
+   vector<threevector> vvv;
+   vector<threevector> fff;
+
+
+};
 
 struct FileInfo {
    //File input/output parameters
@@ -30,6 +39,8 @@ struct FileInfo {
    vector<double> latt_y;
    vector<double> latt_z;
    std::vector<atomType> atom_types;
+   std::vector<TimeStep> timesteps;
+
 
    FileInfo() {
       numatoms=0;
@@ -49,7 +60,7 @@ struct FileInfo {
    }
 };
 
-
+   
 
 
 
