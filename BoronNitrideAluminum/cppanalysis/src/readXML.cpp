@@ -41,7 +41,7 @@ void parse_atomtypes_tag(tag* atomtypesTag, FileInfo *vasprun ){
                }
                fieldcounter++; 
                }
-               vasprun->atom_types.push_back(atomTypeData);
+               vasprun->atoms.push_back(atomTypeData);
          }
       }
    }
@@ -146,22 +146,26 @@ int readXML(FileInfo *vasprun) {
    cout << "Number of atoms: " << vasprun->numatoms << endl;
    cout << "Number of atom types: " << vasprun->numtypes << endl;
    for (int i =0; i<vasprun->numtypes; i++) {
-      cout << "\tThere are " << vasprun->atom_types[i].atomspertype << " " << vasprun->atom_types[i].element << " atoms each with mass " 
-           << vasprun->atom_types[i].mass << " and " << vasprun->atom_types[i].valence 
-           << " valence electrons.\n\t\t--> The " << vasprun->atom_types[i].pseudopotential << " pseudopotential was used."  << endl;
+      cout << "\tThere are " << vasprun->atoms[i].atomspertype << " " << vasprun->atoms[i].element << " atoms each with mass " 
+           << vasprun->atoms[i].mass << " and " << vasprun->atoms[i].valence 
+           << " valence electrons.\n\t\t--> The " << vasprun->atoms[i].pseudopotential << " pseudopotential was used."  << endl;
    }
 
    cout << "The x lattice vector is <" << vasprun->latt_x[0] << ", " << vasprun->latt_x[1] << ", " << vasprun->latt_x[2] << ">." <<endl;
    cout << "The y lattice vector is <" << vasprun->latt_y[0] << ", " << vasprun->latt_y[1] << ", " << vasprun->latt_y[2] << ">." <<endl;
    cout << "The z lattice vector is <" << vasprun->latt_z[0] << ", " << vasprun->latt_z[1] << ", " << vasprun->latt_z[2] << ">." <<endl;
 
+   //atomType* theatomIwant;
    int index_counter=0;
-   for (unsigned  i=0; i < vasprun->atom_types.size(); i++ ) {
-      vasprun->atom_types[i].sindex = index_counter;
-      vasprun->atom_types[i].eindex = index_counter + vasprun->atomType[i]
-      cout << "Atom "<<i<<" will go from index "<<indexA<<" to " << indexB << "." <<endl;
-
+   for (unsigned  i=0; i < vasprun->atoms.size(); i++ ) {
+      vasprun->atoms[i].sindex = index_counter;
+      vasprun->atoms[i].eindex = index_counter + vasprun->atoms[i].atomspertype-1;
+      cout << "   Atom "<<i<<" will go from index "<<vasprun->atoms[i].sindex<<" to " << vasprun->atoms[i].eindex << "." <<endl;
+      index_counter = vasprun->atoms[i].eindex+1;
    }
+
+   atomType* theatomIwant = vasprun->GetAtom("Al");
+   cout << "I chose the " << theatomIwant->element << " atoms which starts at index " << theatomIwant->sindex << endl ;
 
 
    cout << "There are " << vasprun->ntimesteps << " timesteps in the file." << endl;
