@@ -21,7 +21,7 @@ typedef vector<float> threevector;
 
 struct TimeStep {
    vector<threevector> ppp;
-   vector<threevector> vvv;
+   /* vector<threevector> vvv;*/
    vector<threevector> fff;
 
 
