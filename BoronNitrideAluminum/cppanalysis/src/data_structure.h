@@ -6,6 +6,14 @@
 #include <string.h>
 using namespace std;
 
+typedef vector<float> threevector;
+
+struct TimeStep {
+   vector<threevector> ppp;
+   vector<threevector> fff;
+};
+
+
 struct atomType {
    int atomspertype;
    string element;
@@ -14,21 +22,21 @@ struct atomType {
    double mass;
    double valence;
    string pseudopotential;
+   std::vector<TimeStep> timesteps;
+
+/*&   void dataToAtomType(TimeStep* d) {
+      cout << "!!!!! " << d->ppp.size() << endl;
+   } */
+
    atomType () {
       atomspertype=0; element="X  ";mass = 0.00; valence = 0.00; pseudopotential="garbage";
    }
+
+
+
+
 }; 
 
-typedef vector<float> threevector;
-
-
-struct TimeStep {
-   vector<threevector> ppp;
-   /* vector<threevector> vvv;*/
-   vector<threevector> fff;
-
-
-};
 
 struct FileInfo {
    //File input/output parameters
@@ -44,9 +52,25 @@ struct FileInfo {
    vector<double> latt_z;
    std::vector<atomType> atoms;
    std::vector<TimeStep> timesteps;
+
+   int dataIntoAtoms(){
+      for (unsigned i=0; i<atoms.size(); i++) {
+         std::vector<TimeStep> alltimes;
+         for (unsigned t=0;t<ntimesteps-1; t++) {
+            TimeStep ts;
+            for (unsigned a=atoms[i].sindex;a<atoms[i].eindex; a++) {
+               ts.ppp.push_back(timesteps[t].ppp[a] ) ;
+               ts.fff.push_back(timesteps[t].fff[a] ) ;
+            }
+            alltimes.push_back(ts);
+         }
+         atoms[i].timesteps = alltimes;
+      }
+      return 1;
+   }
+
    
    atomType* GetAtom(string element) {
-      int death_flag = 0;
       for (unsigned i=0; i<atoms.size(); i++) {
          if (atoms[i].element==element) {
             return &atoms[i];
