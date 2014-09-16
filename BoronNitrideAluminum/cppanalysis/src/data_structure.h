@@ -15,47 +15,30 @@ struct TimeStep {
 
 
 struct atomType {
-   int atomspertype;
-   string element;
-   int sindex;
-   int eindex;
-   double mass;
-   double valence;
-   string pseudopotential;
+   int atomspertype, sindex, eindex;
+   string element,pseudopotential;
+   double mass, valence;
    std::vector<TimeStep> timesteps;
-
-/*&   void dataToAtomType(TimeStep* d) {
-      cout << "!!!!! " << d->ppp.size() << endl;
-   } */
 
    atomType () {
       atomspertype=0; element="X  ";mass = 0.00; valence = 0.00; pseudopotential="garbage";
    }
-
-
-
-
 }; 
 
 
 struct FileInfo {
    //File input/output parameters
-   std::string input_filename;
-   std::string output_data_location;
+   string input_filename,output_data_location;
    //File data structures
-   int numatoms;
-   int numtypes;
-   int ntimesteps;
-   std::vector<int> atom_count;
-   vector<double> latt_x;
-   vector<double> latt_y;
-   vector<double> latt_z;
-   std::vector<atomType> atoms;
-   std::vector<TimeStep> timesteps;
+   int numatoms,numtypes,ntimesteps;
+   vector<int> atom_count;
+   vector<double> latt_x,latt_y,latt_z;
+   vector<atomType> atoms;
+   vector<TimeStep> timesteps;
 
    int dataIntoAtoms(){
       for (unsigned i=0; i<atoms.size(); i++) {
-         std::vector<TimeStep> alltimes;
+         vector<TimeStep> alltimes;
          for (unsigned t=0;t<ntimesteps-1; t++) {
             TimeStep ts;
             for (unsigned a=atoms[i].sindex;a<atoms[i].eindex; a++) {
@@ -70,7 +53,9 @@ struct FileInfo {
    }
 
    
-   atomType* GetAtom(string element) {
+   atomType* GetAtom(string element) { 
+   //returns a pointer to a specific atoms object, based on the passed element symbol
+   //ie:   vasprun->GetAtom("Al")   returns a pointer the object holding the Aluminum atom info
       for (unsigned i=0; i<atoms.size(); i++) {
          if (atoms[i].element==element) {
             return &atoms[i];
