@@ -141,6 +141,8 @@ int readXML(FileInfo *vasprun) {
       } 
    }
 
+   vasprun->ntimesteps = vasprun->timesteps.size();
+
    cout << "Number of atoms: " << vasprun->numatoms << endl;
    cout << "Number of atom types: " << vasprun->numtypes << endl;
    for (int i =0; i<vasprun->numtypes; i++) {
@@ -153,7 +155,16 @@ int readXML(FileInfo *vasprun) {
    cout << "The y lattice vector is <" << vasprun->latt_y[0] << ", " << vasprun->latt_y[1] << ", " << vasprun->latt_y[2] << ">." <<endl;
    cout << "The z lattice vector is <" << vasprun->latt_z[0] << ", " << vasprun->latt_z[1] << ", " << vasprun->latt_z[2] << ">." <<endl;
 
-   cout << "The timesteps vector is " << vasprun->timesteps.size() << " elements long" << endl;
+   int index_counter=0;
+   for (unsigned  i=0; i < vasprun->atom_types.size(); i++ ) {
+      vasprun->atom_types[i].sindex = index_counter;
+      vasprun->atom_types[i].eindex = index_counter + vasprun->atomType[i]
+      cout << "Atom "<<i<<" will go from index "<<indexA<<" to " << indexB << "." <<endl;
+
+   }
+
+
+   cout << "There are " << vasprun->ntimesteps << " timesteps in the file." << endl;
    cout << "For timestep 0 (the first timestep):" <<endl;
    cout << "\tThere are "<<vasprun->timesteps[0].ppp.size() << " position vectors." << endl;
    cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " force vectors." << endl;
