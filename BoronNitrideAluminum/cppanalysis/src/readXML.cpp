@@ -164,8 +164,12 @@ int readXML(FileInfo *vasprun) {
       index_counter = vasprun->atoms[i].eindex+1;
    }
 
+   int junk=vasprun->dataIntoAtoms();
+   cout << "HERE";
    atomType* theatomIwant = vasprun->GetAtom("Al");
    cout << "I chose the " << theatomIwant->element << " atoms which starts at index " << theatomIwant->sindex << endl ;
+   cout << "  For the " << theatomIwant->element << " atoms, there are " << theatomIwant->timesteps.size()  << "timesteps with timestep 0 having " << theatomIwant->timesteps[0].ppp.size() << " ppp elements." << endl;
+
 
 
    cout << "There are " << vasprun->ntimesteps << " timesteps in the file." << endl;
