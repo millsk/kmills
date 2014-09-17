@@ -3,11 +3,14 @@
 
 #include <string>
 #include <vector>
+#include <string.h>
 using namespace std;
 
 struct atomType {
    int atomspertype;
    string element;
+   int sindex;
+   int eindex;
    double mass;
    double valence;
    string pseudopotential;
@@ -34,12 +37,26 @@ struct FileInfo {
    //File data structures
    int numatoms;
    int numtypes;
+   int ntimesteps;
    std::vector<int> atom_count;
    vector<double> latt_x;
    vector<double> latt_y;
    vector<double> latt_z;
-   std::vector<atomType> atom_types;
+   std::vector<atomType> atoms;
    std::vector<TimeStep> timesteps;
+   
+   atomType* GetAtom(string element) {
+      int death_flag = 0;
+      for (unsigned i=0; i<atoms.size(); i++) {
+         if (atoms[i].element==element) {
+            return &atoms[i];
+         }
+      }
+      //If the function hasn't returned yet, then the atom type was not found. Kill the program since
+      //we'll later get a Segmentation Fault for pointing to a non-existent object.
+      cout << endl << endl << "FATAL ERROR!!!" <<endl<< "ATOM TYPE "<<element<<" NOT FOUND. EXITING." << endl;
+      exit(0);
+   }
 
 
    FileInfo() {
