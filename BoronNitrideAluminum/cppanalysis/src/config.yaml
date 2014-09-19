@@ -1,0 +1,11 @@
+plots:
+   msd: True
+   msd_outputfilename: output/msd.dat
+   msd_atoms: Al B N
+
+
+
+
+
+
+
