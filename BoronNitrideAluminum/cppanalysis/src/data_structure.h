@@ -28,13 +28,14 @@ struct atomType {
 
 struct FileInfo {
    //File input/output parameters
-   string input_filename,output_data_location;
+   string input_filename,output_data_location,system_name;
    //File data structures
    int numatoms,numtypes,ntimesteps;
    vector<int> atom_count;
    vector<double> latt_x,latt_y,latt_z;
    vector<atomType> atoms;
    vector<TimeStep> timesteps;
+   double dt,starting_temperature; //timestep length, delta t
 
    int dataIntoAtoms(){
       for (unsigned i=0; i<atoms.size(); i++) {
