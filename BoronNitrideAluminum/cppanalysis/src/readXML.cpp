@@ -43,8 +43,10 @@ void parse_atomtypes_tag(tag* atomtypesTag, FileInfo *vasprun ){
    }
 }
 
-bool update_3d_vector(vector<double>* objectToUpdate, float x, float y, float z) {
-   (*objectToUpdate)[0] = x;  (*objectToUpdate)[1] = y; (*objectToUpdate)[2] = z;
+bool update_3d_vector(vector<threevector>* objectToUpdate, float x, float y, float z) {
+   threevector r;
+   r.push_back(x);r.push_back(y);r.push_back(z);
+   (*objectToUpdate).push_back(r); //[0] = x;  (*objectToUpdate)[1] = y; (*objectToUpdate)[2] = z;
    return true;
 }
 
@@ -98,11 +100,11 @@ int readXML(FileInfo *vasprun) {
                                     float x,y,z;
                                     sscanf(v->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
                                     if (dimension==1){
-                                       update_3d_vector(&vasprun->latt_x, x,y,z);
+                                       update_3d_vector(&vasprun->latt, x,y,z);
                                     } else if (dimension == 2) {
-                                       update_3d_vector(&vasprun->latt_y, x,y,z);
+                                       update_3d_vector(&vasprun->latt, x,y,z);
                                     } else if (dimension ==3) {
-                                       update_3d_vector(&vasprun->latt_z, x,y,z);
+                                       update_3d_vector(&vasprun->latt, x,y,z);
                                     }
                                     dimension++;
                                  }
@@ -158,9 +160,9 @@ int readXML(FileInfo *vasprun) {
            << " valence electrons.\n\t\t--> The " << vasprun->atoms[i].pseudopotential << " pseudopotential was used."  << endl;
    }
 
-   cout << "The x lattice vector is <" << vasprun->latt_x[0] << ", " << vasprun->latt_x[1] << ", " << vasprun->latt_x[2] << ">." <<endl;
-   cout << "The y lattice vector is <" << vasprun->latt_y[0] << ", " << vasprun->latt_y[1] << ", " << vasprun->latt_y[2] << ">." <<endl;
-   cout << "The z lattice vector is <" << vasprun->latt_z[0] << ", " << vasprun->latt_z[1] << ", " << vasprun->latt_z[2] << ">." <<endl;
+   cout << "The x lattice vector is <" << vasprun->latt[0][0] << ", " << vasprun->latt[0][1] << ", " << vasprun->latt[0][2] << ">." <<endl;
+   cout << "The y lattice vector is <" << vasprun->latt[1][0] << ", " << vasprun->latt[1][1] << ", " << vasprun->latt[1][2] << ">." <<endl;
+   cout << "The z lattice vector is <" << vasprun->latt[2][0] << ", " << vasprun->latt[2][1] << ", " << vasprun->latt[2][2] << ">." <<endl;
 
    //atomType* theatomIwant;
    int index_counter=0;
