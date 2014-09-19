@@ -15,11 +15,10 @@ int main() {
    readXML(&v);
    cout << "\n done"<<endl;
 
+
+
    if (config.msd) {
-      vector<string> msd_atoms = string_split_to_vector(config.msd_atoms);
-      for (int i=0; i<msd_atoms.size()-1; i++) {
-         cout << msd_atoms[i] <<endl;
-      }
+      cout << "MSD requested for " << config.msd_atoms.size() << " atom types: " << vec2str(config.msd_atoms) << endl;;
    }
 
 
