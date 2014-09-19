@@ -45,6 +45,7 @@ void parse_atomtypes_tag(tag* atomtypesTag, FileInfo *vasprun ){
 
 bool update_3d_vector(vector<double>* objectToUpdate, float x, float y, float z) {
    (*objectToUpdate)[0] = x;  (*objectToUpdate)[1] = y; (*objectToUpdate)[2] = z;
+   return true;
 }
 
 //int readXML(FileInfo& info) {
@@ -183,6 +184,7 @@ int readXML(FileInfo *vasprun) {
    cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " force vectors." << endl;
 
 
+   return 0;
 }
 
 
