@@ -9,10 +9,6 @@
 using namespace std;
 
 typedef TiXmlElement tag;
-
-
-
-
 int str2int(string ss){
    stringstream strValue;
    strValue << ss;
@@ -67,7 +63,17 @@ int readXML(FileInfo *vasprun) {
    for (tag* level1 = doc.FirstChildElement(); level1 != NULL; level1 = level1->NextSiblingElement()) {
       if (0==strcmp(level1->Value(),"modeling")) {
          for (tag* level2 = level1->FirstChildElement(); level2 != NULL; level2 = level2->NextSiblingElement()) {
-            if (0==strcmp(level2->Value(),"atominfo")) {
+            if (0==strcmp(level2->Value(),"incar")) {
+               for (tag* level3 = level2->FirstChildElement(); level3!=NULL; level3 = level3->NextSiblingElement()) {
+                  if (0==strcmp(level3->Value(), "i") && 0==strcmp(level3->Attribute("name"),"POTIM")) {
+                     vasprun->dt = stod(level3->FirstChild()->ToText()->Value());
+                  } else if (0==strcmp(level3->Value(), "i") && 0==strcmp(level3->Attribute("name"),"SYSTEM")) {
+                     vasprun->system_name = level3->FirstChild()->ToText()->Value();
+                  } else if (0==strcmp(level3->Value(), "i") && 0==strcmp(level3->Attribute("name"),"TEBEG")) {
+                     vasprun->starting_temperature = stod(level3->FirstChild()->ToText()->Value());
+                  }
+               }
+            } else if (0==strcmp(level2->Value(),"atominfo")) {
                for (tag* level3 = level2->FirstChildElement(); level3 != NULL; level3 = level3->NextSiblingElement()) {
                   if (0==strcmp(level3->Value(),"atoms")) {
                      vasprun->numatoms = str2int(level3->FirstChild()->ToText()->Value());
@@ -142,7 +148,7 @@ int readXML(FileInfo *vasprun) {
    }
 
    vasprun->ntimesteps = vasprun->timesteps.size();
-
+   cout << "SYSTEM: " << vasprun->system_name << endl;
    cout << "Number of atoms: " << vasprun->numatoms << endl;
    cout << "Number of atom types: " << vasprun->numtypes << endl;
    for (int i =0; i<vasprun->numtypes; i++) {
@@ -165,14 +171,13 @@ int readXML(FileInfo *vasprun) {
    }
 
    int junk=vasprun->dataIntoAtoms();
-   cout << "HERE";
    atomType* theatomIwant = vasprun->GetAtom("Al");
    cout << "I chose the " << theatomIwant->element << " atoms which starts at index " << theatomIwant->sindex << endl ;
-   cout << "  For the " << theatomIwant->element << " atoms, there are " << theatomIwant->timesteps.size()  << "timesteps with timestep 0 having " << theatomIwant->timesteps[0].ppp.size() << " ppp elements." << endl;
+   cout << "  For the " << theatomIwant->element << " atoms, there are " << theatomIwant->timesteps.size()  << " timesteps with timestep 0 having " << theatomIwant->timesteps[0].ppp.size() << " ppp elements." << endl;
 
 
 
-   cout << "There are " << vasprun->ntimesteps << " timesteps in the file." << endl;
+   cout << "There are " << vasprun->ntimesteps << " timesteps in the file with dt=" << vasprun->dt << " for a total time of " << vasprun->dt*vasprun->ntimesteps/1000.0 << " picoseconds." << endl;
    cout << "For timestep 0 (the first timestep):" <<endl;
    cout << "\tThere are "<<vasprun->timesteps[0].ppp.size() << " position vectors." << endl;
    cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " force vectors." << endl;
@@ -183,13 +188,13 @@ int readXML(FileInfo *vasprun) {
 
 
 
-int main() {
+/* int main() {
    cout << "\n Starting XML read"<<endl;
    FileInfo v;
    v.input_filename="vasprun.xml";
    readXML(&v);
    cout << "\n done"<<endl;
-}
+}*/
 
 
 
