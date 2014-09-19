@@ -90,8 +90,8 @@ struct FileInfo {
 struct Configuration {
   bool msd;
   string msd_outputfilename;
-  string msd_atoms;
- 
+  string tempstr;
+  vector<string> msd_atoms;
    
 } config;
 
