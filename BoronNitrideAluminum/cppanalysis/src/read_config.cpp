@@ -2,7 +2,7 @@
 #include <string>
 #include "yaml-cpp/yaml.h"
 #include <iostream>
-
+#include "utility_functions.h"
 #include "data_structure.h"
 
 using namespace std;
@@ -22,18 +22,9 @@ void parse_inputfile(Configuration& config, const Node& node) {
     const Node& plots = node["plots"];
     parse(plots, "msd", config.msd);
     parse(plots, "msd_outputfilename", config.msd_outputfilename);
-    parse(plots, "msd_atoms", config.temp01);
+    parse(plots, "msd_atoms", config.tempstr);
+      config.msd_atoms = str2vec(config.tempstr);
     
-}
-
-
-void validate_config(Configuration& config) {
-   
-
-  //split msd atoms into vector:
-
-
-
 }
 
 
