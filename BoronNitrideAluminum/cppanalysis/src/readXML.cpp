@@ -124,9 +124,9 @@ int readXML(FileInfo *vasprun) {
                               float x,y,z;
                               vector<float> r;
                               sscanf(vec->FirstChild()->ToText()->Value(), "  %f  %f  %f ", &x, &y, &z );
-                              r.push_back(x);
-                              r.push_back(y);
-                              r.push_back(z);
+                              r.push_back(x*vasprun->latt[0][0]);
+                              r.push_back(y*vasprun->latt[1][1]);
+                              r.push_back(z*vasprun->latt[2][2]);
                               thisStep.ppp.push_back(r);
                            }
                         } 
@@ -184,6 +184,30 @@ int readXML(FileInfo *vasprun) {
    cout << "For timestep 0 (the first timestep):" <<endl;
    cout << "\tThere are "<<vasprun->timesteps[0].ppp.size() << " position vectors." << endl;
    cout << "\tThere are "<<vasprun->timesteps[0].fff.size() << " force vectors." << endl;
+   cout << "\tThe first x coordinate of the position vector of the first atom in this timestep is " << vasprun->timesteps[0].ppp[0][0] << "\n";
+
+
+vasprun->unwrap();
+
+/*   of << "animated_plot_data" << "\n";
+   of << "timestep,[xyzposition vectors]\n";*/
+   for (int t=0; t<vasprun->ntimesteps-1; t++ ) {
+   ofstream of;
+   of.open("diagnostic_scripts/animated_wrapped" + static_cast<ostringstream*>( &(ostringstream() << t) )->str() + ".data");
+/*      of << "t=" << t << "\n";*/
+      of << "\n";
+      for (int i=0; i<vasprun->atoms[2].atomspertype-1; i++ ) {
+         of << "\t";
+         for (int x=0;x<3;x++){
+            of << vasprun->atoms[2].timesteps[t].ppp_uw[i][x] << "\t\t";
+         }
+         of << "\n";
+      }
+   of.close();
+   }
+
+
+
 
 
    return 0;
