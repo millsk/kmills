@@ -72,19 +72,31 @@ struct FileInfo {
    }
 
    int unwrap() {
+      int sign;
       if (unwrapped_already) {return 0;}
+
+      //copy the position vectors
+      for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
+         for (unsigned t=1; t < ntimesteps-1; t++) { //for each timestep
+            atoms[i].timesteps[t].ppp_uw = atoms[i].timesteps[t].ppp;
+         }
+      }
+
+
       for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
          cout << "Unwrapping "<< atoms[i].element << " coordinates.\n";
          for (unsigned t=1; t < ntimesteps-1; t++) { //for each timestep
 //            cout << "t=" <<  t << "\n";
-            vector<threevector> &x0 = atoms[i].timesteps[t-1].ppp;
-            vector<threevector> &x1 = atoms[i].timesteps[t].ppp;
+//            atoms[i].timesteps[t].ppp_uw = atoms[i].timesteps[t].ppp;
+            vector<threevector> &x0 = atoms[i].timesteps[t-1].ppp_uw;
+            vector<threevector> &x1 = atoms[i].timesteps[t].ppp_uw;
             for (unsigned a=0; a<x0.size(); a++) { //for atom in ppp vector
-//               cout << "a=" << a << "\n";
                for (int x=0; x<3; x++) {  //for each dimension (0=x,1=y,2=z) {
-//                  cout << "!!!" << x0[a][x] << "\n";
-                  if ((abs(x0[a][x] -x1[a][x])) > 0.5 ){//sqrt(pow(latt[x][0],2) + pow(latt[x][1],2) + pow(latt[x][2],2)) ) {
+                  if ((abs(x0[a][x] -x1[a][x])) > latt[x][x]/2 ) {
+                     if (x0[a][x] > x1[a][x]) {sign=-1;}
+                     else {sign=1;}
                      cout << "0" ;
+                     x1[a][x] = x1[a][x] + sign*latt[x][x];
                   }
                }
             }
