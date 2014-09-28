@@ -77,7 +77,7 @@ struct FileInfo {
 
       //copy the position vectors
       for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
-         for (unsigned t=1; t < ntimesteps-1; t++) { //for each timestep
+         for (unsigned t=0; t < ntimesteps-1; t++) { //for each timestep
             atoms[i].timesteps[t].ppp_uw = atoms[i].timesteps[t].ppp;
          }
       }
@@ -86,14 +86,15 @@ struct FileInfo {
       for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
          cout << "Unwrapping "<< atoms[i].element << " coordinates.\n";
          for (unsigned t=1; t < ntimesteps-1; t++) { //for each timestep
-//            cout << "t=" <<  t << "\n";
+            cout << "t=" <<  t << "\n";
 //            atoms[i].timesteps[t].ppp_uw = atoms[i].timesteps[t].ppp;
             vector<threevector> &x0 = atoms[i].timesteps[t-1].ppp_uw;
             vector<threevector> &x1 = atoms[i].timesteps[t].ppp_uw;
+            cout << "h";
             for (unsigned a=0; a<x0.size(); a++) { //for atom in ppp vector
                for (int x=0; x<3; x++) {  //for each dimension (0=x,1=y,2=z) {
-                  if ((abs(x0[a][x] -x1[a][x])) > latt[x][x]/2 ) {
-                     if (x0[a][x] > x1[a][x]) {sign=-1;}
+                  if ((abs(x0[a][x] -x1[a][x])) > latt[x][x]/2 ) { //if the difference is greater than half lv
+                     if (x0[a][x] < x1[a][x]) {sign=-1;} //if 
                      else {sign=1;}
                      cout << "0" ;
                      x1[a][x] = x1[a][x] + sign*latt[x][x];
