@@ -189,12 +189,11 @@ int readXML(FileInfo *vasprun) {
 
 vasprun->unwrap();
 
-/*   of << "animated_plot_data" << "\n";
-   of << "timestep,[xyzposition vectors]\n";*/
+/* This section writes the unwrapped coordinates to a series of files for animated plotting to ensure proper wrapping */ 
+/*
    for (int t=0; t<vasprun->ntimesteps-1; t++ ) {
    ofstream of;
    of.open("diagnostic_scripts/animated_wrapped" + static_cast<ostringstream*>( &(ostringstream() << t) )->str() + ".data");
-/*      of << "t=" << t << "\n";*/
       of << "\n";
       for (int i=0; i<vasprun->atoms[2].atomspertype-1; i++ ) {
          of << "\t";
@@ -205,9 +204,7 @@ vasprun->unwrap();
       }
    of.close();
    }
-
-
-
+*/
 
 
    return 0;
