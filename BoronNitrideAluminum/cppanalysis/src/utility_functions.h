@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 string vec2str(vector<string> v, string delimiter=" ") {
    string s;
    for (int i=0; i<v.size(); i++) {
