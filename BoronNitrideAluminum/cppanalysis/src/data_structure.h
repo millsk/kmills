@@ -33,11 +33,14 @@ struct FileInfo {
    //File data structures
    int numatoms,numtypes,ntimesteps;
    bool unwrapped_already=false;
+   bool COM_already=false;
    vector<int> atom_count;
 //   vector<double> latt_x,latt_y,latt_z;
    vector<threevector> latt;
+   vector<threevector> COM; //centre of mass
    vector<atomType> atoms;
    vector<TimeStep> timesteps;
+   float totalMass;
    double dt,starting_temperature; //timestep length, delta t
 
    int dataIntoAtoms(){
@@ -81,22 +84,18 @@ struct FileInfo {
             atoms[i].timesteps[t].ppp_uw = atoms[i].timesteps[t].ppp;
          }
       }
-
-
       for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
          cout << "Unwrapping "<< atoms[i].element << " coordinates.\n";
          for (unsigned t=1; t < ntimesteps-1; t++) { //for each timestep
-            cout << "t=" <<  t << "\n";
+//            cout << "t=" <<  t << "\n";
 //            atoms[i].timesteps[t].ppp_uw = atoms[i].timesteps[t].ppp;
             vector<threevector> &x0 = atoms[i].timesteps[t-1].ppp_uw;
             vector<threevector> &x1 = atoms[i].timesteps[t].ppp_uw;
-            cout << "h";
             for (unsigned a=0; a<x0.size(); a++) { //for atom in ppp vector
                for (int x=0; x<3; x++) {  //for each dimension (0=x,1=y,2=z) {
                   if ((abs(x0[a][x] -x1[a][x])) > latt[x][x]/2 ) { //if the difference is greater than half lv
                      if (x0[a][x] < x1[a][x]) {sign=-1;} //if 
                      else {sign=1;}
-                     cout << "0" ;
                      x1[a][x] = x1[a][x] + sign*latt[x][x];
                   }
                }
@@ -106,6 +105,54 @@ struct FileInfo {
       unwrapped_already=true;
       return 0;
    }
+
+
+   int mass_system(){
+      for (unsigned i=0; i<atoms.size(); i++) {
+         totalMass+=atoms[i].mass * atoms[i].atomspertype;
+      }
+      return 0;
+   }
+
+
+   int calculate_COM() {
+      if (COM_already) {return 0;}
+      mass_system();
+      threevector thisCOM;
+      thisCOM.push_back(0);
+      thisCOM.push_back(0);
+      thisCOM.push_back(0);
+      for (unsigned t=0; t < ntimesteps-1; t++) { //for each timestep
+         thisCOM[0] = 0; thisCOM[1]=0;thisCOM[2]=0;
+         for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
+            vector<threevector> &r = atoms[i].timesteps[t].ppp_uw;
+            for (unsigned a=0; a<r.size(); a++) { //for atom in ppp vector
+               for (int x=0; x<3; x++) {  //for each dimension (0=x,1=y,2=z) {
+                  thisCOM[x] += (atoms[i].mass * r[a][x]);
+               }
+            }
+         }
+         thisCOM[0] /= totalMass;
+         thisCOM[1] /= totalMass;
+         thisCOM[2] /= totalMass;
+         COM.push_back(thisCOM);
+         if (t%10==0) {
+            cout << COM[t][0] << "\t" << COM[t][1] << "\t" << COM[t][2] << "\n" ;
+         }
+      }
+      COM_already=true;
+
+         cout << "TOTAL MASS: " << totalMass << "\n";
+//print it out to check:
+
+
+   return 0;
+
+
+   }
+   
+
+
 
 
    FileInfo() {
