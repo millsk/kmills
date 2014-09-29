@@ -9,6 +9,14 @@ using namespace std;
 
 typedef vector<float> threevector;
 
+struct MSDSteps {
+   vector<double> msd_value;
+};
+
+struct COMSteps {
+   vector<threevector> COM_value;
+};
+
 struct TimeStep {
    vector<threevector> ppp;
    vector<threevector> ppp_uw; //unwrapped
@@ -16,11 +24,14 @@ struct TimeStep {
 };
 
 struct atomType {
+   int atomindex; //the index of the atom referenced by the parent.
    int atomspertype, sindex, eindex;
    string element,pseudopotential;
    double mass, valence;
-   std::vector<TimeStep> timesteps;
-
+   vector<TimeStep> timesteps;
+   MSDSteps MSD;
+   COMSteps COM;
+   bool COM_already=false;
    atomType () {
       atomspertype=0; element="X  ";mass = 0.00; valence = 0.00; pseudopotential="garbage";
    }
@@ -33,7 +44,6 @@ struct FileInfo {
    //File data structures
    int numatoms,numtypes,ntimesteps;
    bool unwrapped_already=false;
-   bool COM_already=false;
    vector<int> atom_count;
 //   vector<double> latt_x,latt_y,latt_z;
    vector<threevector> latt;
@@ -119,34 +129,38 @@ struct FileInfo {
    }
 
 
-   int calculate_COM() {
-      if (COM_already) {return 0;}
-      mass_system();
+   int calculate_COM(atomType *atoms) {
+      if (atoms->COM_already) {return 0;}
+      cout << "Calculating center of mass for " << atoms->element << ".\n"; 
+      double atomTotalMass = atoms->mass * atoms->atomspertype;
       threevector thisCOM;
       thisCOM.push_back(0);
       thisCOM.push_back(0);
       thisCOM.push_back(0);
       for (unsigned t=0; t < ntimesteps-1; t++) { //for each timestep
-         thisCOM[0] = 0; thisCOM[1]=0;thisCOM[2]=0;
-         for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
-            vector<threevector> &r = atoms[i].timesteps[t].ppp_uw;
+         thisCOM[0] = 0;
+         thisCOM[1] = 0;
+         thisCOM[2] = 0;
+         //for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
+            vector<threevector> &r = atoms->timesteps[t].ppp_uw;
             for (unsigned a=0; a<r.size(); a++) { //for atom in ppp vector
                for (int x=0; x<3; x++) {  //for each dimension (0=x,1=y,2=z) {
-                  thisCOM[x] += (atoms[i].mass * r[a][x]);
+                  thisCOM[x] += (atoms->mass * r[a][x]);
                }
             }
-         }
-         thisCOM[0] /= totalMass;
-         thisCOM[1] /= totalMass;
-         thisCOM[2] /= totalMass;
-         COM.push_back(thisCOM);
+         //}
+         thisCOM[0] /= atomTotalMass;
+         thisCOM[1] /= atomTotalMass;
+         thisCOM[2] /= atomTotalMass;
+         atoms->COM.COM_value.push_back(thisCOM);
+/* Write out every tenth center of mass
          if (t%10==0) {
-            cout << COM[t][0] << "\t" << COM[t][1] << "\t" << COM[t][2] << "\n" ;
+            cout << atoms->COM.COM_value[t][0] << "\t" << atoms->COM.COM_value[t][1] << "\t" << atoms->COM.COM_value[t][2] << "\n" ;
          }
+*/
       }
-      COM_already=true;
+      atoms->COM_already=true;
 
-         cout << "TOTAL MASS: " << totalMass << "\n";
 //print it out to check:
 
 
