@@ -1,7 +1,7 @@
 import math
 import random
 
-number_of_Aluminums=500  #How many Al atoms to place
+number_of_Aluminums=200  #How many Al atoms to place
 density = 2.35000#liquid Aluminum density, g/cm**3
 atomic_mass = 26.981539  #atomic mass Al, g/mol.
 
@@ -14,11 +14,11 @@ padding_xy = 1.0
 
 #THESE ARE APPROXIMATE AND WILL BE ADJUSTED
 #IN ORDER TO FIT THE BORON NITRIDE LATTICE
-size_x = 25.0 #13.42
-size_y = 25.0 #13.42
+size_x = 20.0 #13.42
+size_y = 20.0 #13.42
 size_z = 40.0 #15.42
 
-scaling = 1.446      #bondlength
+scaling = 3.112      #bondlength
 
 
 nx = int(math.floor((size_x/((3./2.)*scaling))))
