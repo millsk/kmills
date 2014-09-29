@@ -190,7 +190,9 @@ int readXML(FileInfo *vasprun) {
 vasprun->unwrap();
 vasprun->mass_system(); //"weigh" the system.
 
-
+for (int i=0; i<vasprun->atoms.size(); i++ ) {
+   vasprun->atoms[i].atomindex=i;
+}
 
 /* This section writes the unwrapped coordinates to a series of files for animated plotting to ensure proper wrapping */ 
 /*
