@@ -19,7 +19,7 @@ int main() {
 
 
    if (config.msd) {
-      msd(&v, &config);
+      mean_square_displacement(&v, &config);
    }
 
 
