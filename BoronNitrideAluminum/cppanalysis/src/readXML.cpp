@@ -188,6 +188,9 @@ int readXML(FileInfo *vasprun) {
 
 
 vasprun->unwrap();
+vasprun->mass_system(); //"weigh" the system.
+
+
 
 /* This section writes the unwrapped coordinates to a series of files for animated plotting to ensure proper wrapping */ 
 /*

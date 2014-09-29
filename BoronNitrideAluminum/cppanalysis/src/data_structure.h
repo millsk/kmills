@@ -40,7 +40,7 @@ struct FileInfo {
    vector<threevector> COM; //centre of mass
    vector<atomType> atoms;
    vector<TimeStep> timesteps;
-   float totalMass;
+   float totalMass=0;
    double dt,starting_temperature; //timestep length, delta t
 
    int dataIntoAtoms(){
@@ -108,10 +108,14 @@ struct FileInfo {
 
 
    int mass_system(){
-      for (unsigned i=0; i<atoms.size(); i++) {
-         totalMass+=atoms[i].mass * atoms[i].atomspertype;
-      }
-      return 0;
+      //for each atom type, add the product of the mass and the number of atoms to the totalMass variable.
+      if (totalMass==0) {  //Only do this if totalMass is 0 (meaning it hasn't already been calculated).
+         for (unsigned i=0; i<atoms.size(); i++) {
+            totalMass+=atoms[i].mass * atoms[i].atomspertype;
+         }
+         return 0;
+      } else {
+         return 1;}
    }
 
 
