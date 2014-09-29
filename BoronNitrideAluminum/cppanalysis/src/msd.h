@@ -3,6 +3,19 @@
 
 #include "data_structure.h"
 
+struct MsdStep {
+   vector<double> msd_step;
+   void declare(int len) {
+       msd_step.clear();
+       for (int i = 0; i < len; i ++) {
+          msd_step.push_back(0);
+       }
+   }   
+};
+
+
+
+vector<double> msd_info; 
 
 
 int msd(FileInfo *vasprun, Configuration *config) {
@@ -13,7 +26,13 @@ int msd(FileInfo *vasprun, Configuration *config) {
 
    
    vasprun->unwrap();
+      
+   vasprun->calculate_COM();    
    
+
+
+
+
 
 
 
