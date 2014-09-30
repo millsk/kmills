@@ -192,10 +192,22 @@ struct FileInfo {
 };
 
 struct Configuration {
-  bool msd;
-  string msd_outputfilename;
-  string tempstr;
-  vector<string> msd_atoms;
+   bool msd;
+   string msd_outputfilename;
+   string tempstr;
+   vector<string> msd_atoms;
+   
+   ofstream script_wrapper;
+   string script_wrapper_location = "output/make_all_plots.sh";
+
+
+   
+   Configuration() {
+   script_wrapper.open(script_wrapper_location);
+   script_wrapper << "#!/bin/sh\n";
+
+   }
+
    
 } config;
 

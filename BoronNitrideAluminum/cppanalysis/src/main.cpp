@@ -7,6 +7,10 @@
 
 using namespace std;
 
+
+
+
+
 int main() {
    cout << "\n Starting XML read"<<endl;
    FileInfo v;
@@ -22,9 +26,8 @@ int main() {
       mean_square_displacement(&v, &config);
    }
 
-
+   config.script_wrapper.close();
    return 0;
 }
-
 
 
