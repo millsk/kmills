@@ -200,11 +200,14 @@ struct Configuration {
    ofstream script_wrapper;
    string script_wrapper_location = "output/make_all_plots.sh";
 
-
+   ofstream log;
+   string log_file_location = "log";
+  
    
    Configuration() {
    script_wrapper.open(script_wrapper_location);
    script_wrapper << "#!/bin/sh\n";
+   log.open(log_file_location);
 
    }
 
