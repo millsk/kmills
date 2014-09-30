@@ -3,20 +3,26 @@
 
 #include "data_structure.h"
 
-
-
-vector<double> msd_info; 
-
-
 int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
    if (!config->msd) {cout << "\nMSD called but not requested in configuration. Exiting"; return 1;}
 
    cout << "--- Starting Mean-Squared Displacement ---" <<endl;
-   cout << "   " << "MSD requested for " << config->msd_atoms.size() << " atom types: " << vec2str(config->msd_atoms) << endl;
+   cout << "MSD requested for " << config->msd_atoms.size() << " atom types: " << vec2str(config->msd_atoms) << endl;
 
    
    vasprun->unwrap(); 
 
+   ofstream of2;
+   of2.open("output/plot_msd.sh");
+   of2 << "#!/bin/bash" << "\n" 
+       << "gnuplot -persist << GNUPLOTINPUT" << "\n"
+       << "set title \"Mean Square Displacement\"\n"
+       << "set term pdf\n"
+       << "set output \"msd.pdf\"\n"
+       << "set xlabel \"Time, picoseconds\"\n"
+       << "set ylabel \"distance, Angstroms\"\n"
+       << "unset key" << "\n"
+       <<"plot ";
 
    for (int atomname=0; atomname < config->msd_atoms.size(); atomname++) {
       //this object will hold the atomType object for this type of atom 
@@ -55,6 +61,13 @@ int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
 
    ofstream of;
    of.open("output/msd_" + atomobject->element + ".data");
+       
+       
+       
+
+   of2 << " 'msd_" << atomobject->element << ".data' using (\\$0*" << vasprun->dt << "*0.001):1 with lines, ";
+
+
    for (int line=0; line < atomobject->MSD.msd_value.size(); line++) {
       of << atomobject->MSD.msd_value[line] << "\n" ;
    }
@@ -64,6 +77,11 @@ int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
    vector<threevector>& test = vasprun->atoms[i].COM.COM_value;
    cout <<"   initial COM:  "   << test[0][0] << "\t" << test[0][1] << "\t" << test[0][2] << "\n" ;
 }
+
+   of2 << "\nGNUPLOTINPUT\n";
+   of2.close();
+
+   config->script_wrapper << "\nbash plot_msd.sh \n" ;   
 
 
    return 0;
