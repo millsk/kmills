@@ -1,7 +1,17 @@
+
+
+files:
+   log: "log"
+   script_wrapper: "output/make_all_plots.sh"
+
+
 plots:
+   msd_data_prefix: "msd_"
    msd: True
-   msd_outputfilename: output/msd.dat
    msd_atoms: 'Al   B   N'
+
+
+   
 
 
 

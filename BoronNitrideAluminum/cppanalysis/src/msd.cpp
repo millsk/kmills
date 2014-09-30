@@ -65,10 +65,10 @@ int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
 
    //write out the data for this element to an element-specific file
    ofstream of;
-   of.open("output/msd_" + atomobject->element + ".data");     
+   of.open("output/" + config->msd_data_prefix + atomobject->element + ".data");     
        
    //write out the gnuplot command, scaling the x-axis increment by the timestep to get it in picoseconds
-   of2 << " 'msd_" << atomobject->element << ".data' using (\\$0*" << vasprun->dt << "*0.001):1 with lines title '" << atomobject->element << "' , ";
+   of2 << "'" << config->msd_data_prefix + atomobject->element << ".data' using (\\$0*" << vasprun->dt << "*0.001):1 with lines title '" << atomobject->element << "' , ";
 
    //write each timestep to a file
    for (int line=0; line < atomobject->MSD.msd_value.size(); line++) {

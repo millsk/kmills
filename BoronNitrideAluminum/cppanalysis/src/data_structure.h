@@ -193,7 +193,7 @@ struct FileInfo {
 
 struct Configuration {
    bool msd;
-   string msd_outputfilename;
+   string msd_data_prefix;
    string tempstr;
    vector<string> msd_atoms;
    
@@ -205,9 +205,9 @@ struct Configuration {
   
    
    Configuration() {
-   script_wrapper.open(script_wrapper_location);
-   script_wrapper << "#!/bin/sh\n";
-   log.open(log_file_location);
+//   script_wrapper.open(script_wrapper_location);
+//   script_wrapper << "#!/bin/sh\n";
+//   log.open(log_file_location);
 
    }
 

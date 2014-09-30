@@ -26,6 +26,10 @@ int main() {
       mean_square_displacement(&v, &config);
    }
 
+// if (config.rdf) {
+//      radial_distribution(&v, &config);
+//   }
+
    config.script_wrapper.close();
    return 0;
 }

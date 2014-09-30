@@ -19,10 +19,18 @@ static void parse(const Node& node, const char* key, T& value) {
 
 
 void parse_inputfile(Configuration& config, const Node& node) {
-    const Node& plots = node["plots"];
-    parse(plots, "msd", config.msd);
-    parse(plots, "msd_outputfilename", config.msd_outputfilename);
-    parse(plots, "msd_atoms", config.tempstr);
+   const Node& files = node["files"];
+   parse(files, "log",config.log_file_location);
+     config.log.open(config.log_file_location);
+   parse(files, "script_wrapper", config.script_wrapper_location);
+     config.script_wrapper.open(config.script_wrapper_location);
+     config.script_wrapper << "#!/bin/sh\n";
+
+
+   const Node& plots = node["plots"];
+   parse(plots, "msd", config.msd);
+   parse(plots, "msd_data_prefix", config.msd_data_prefix);
+   parse(plots, "msd_atoms", config.tempstr);
       config.msd_atoms = str2vec(config.tempstr);
     
 }
