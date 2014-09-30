@@ -32,8 +32,8 @@ int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
       //Calculate the center of mass for this atom_type. It'll be stored in the object.
       vasprun->calculate_COM(atomobject);
       //Make a pointer to the center of mass vector so I don't have to type so much all the time.
-//    vector<threevector>& COM = vasprun->atoms[atomobject->atomindex].COM.COM_value;         
-      cout << "Beginning MSD calculation for " << atomobject->element << ".\n";   
+      vector<threevector>& COM = vasprun->atoms[atomobject->atomindex].COM.COM_value;         
+      
       int msd_count=0; //the integer number of data points that go into the aggregate sum
       double msd_sum=0; //the aggregate sum of of the displacements in the  timestep
       double xdist; // distances that the atom moved in x,y,z
@@ -46,18 +46,18 @@ int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
                int t2=0; //the timestep to calculate displacement from
                // xdist = r(t) - r(0) - [  COM(t)  - COM(t) ]
                xdist = atomobject->timesteps[t].ppp_uw[a][0] - atomobject->timesteps[t2].ppp_uw[a][0]
-                       - atomobject->timesteps[t].COM[0] + atomobject->timesteps[t2].COM[0];
+                       - atomobject->COM.COM_value[t][0] + atomobject->COM.COM_value[t2][0];
                ydist = atomobject->timesteps[t].ppp_uw[a][1] - atomobject->timesteps[t2].ppp_uw[a][1]
-                       - atomobject->timesteps[t].COM[1] + atomobject->timesteps[t2].COM[1];
+                       - atomobject->COM.COM_value[t][1] + atomobject->COM.COM_value[t2][1];
                zdist = atomobject->timesteps[t].ppp_uw[a][2] - atomobject->timesteps[t2].ppp_uw[a][2]
-                       - atomobject->timesteps[t].COM[2] + atomobject->timesteps[t2].COM[2];
+                       - atomobject->COM.COM_value[t][2] + atomobject->COM.COM_value[t2][2];
                //the sum is the modulus of this vector w/o square root.
                msd_sum+=pow(xdist,2) + pow(ydist,2) + pow(zdist,2);
                //increment the sample counter (we'll use this to average later).
                msd_count++;
          }
          //push the data in to the object
-         atomobject->timesteps[t].MSD= ( msd_sum / msd_count );
+         atomobject->MSD.msd_value.push_back( msd_sum / msd_count );
          //reset the counters
          msd_sum=0;
          msd_count=0;
@@ -71,11 +71,8 @@ int mean_square_displacement(FileInfo *vasprun, Configuration *config) {
    of2 << "'" << config->msd_data_prefix + atomobject->element << ".data' using (\\$0*" << vasprun->dt << "*0.001):1 with lines title '" << atomobject->element << "' , ";
 
    //write each timestep to a file
-   for (int t=0; t < atomobject->timesteps.size(); t++) {
-      if (atomobject->timesteps[t].MSD>=0) {
-         of << atomobject->timesteps[t].MSD << "\n" ;
-//         cout << atomobject->timesteps[t].MSD << "\n" ;
-      }
+   for (int line=0; line < atomobject->MSD.msd_value.size(); line++) {
+      of << atomobject->MSD.msd_value[line] << "\n" ;
    }
    of.close();
 

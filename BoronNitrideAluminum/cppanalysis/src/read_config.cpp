@@ -33,6 +33,10 @@ void parse_inputfile(Configuration& config, const Node& node) {
    parse(plots, "msd_atoms", config.tempstr);
       config.msd_atoms = str2vec(config.tempstr);
     
+   parse(plots, "rdf", config.rdf);
+   parse(plots, "rdf_data_prefix", config.rdf_data_prefix);
+   parse(plots, "rdf_atoms", config.tempstr);
+      config.rdf_atoms = str2vec(config.tempstr);
 }
 
 

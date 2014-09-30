@@ -9,18 +9,17 @@ using namespace std;
 
 typedef vector<float> threevector;
 
-struct MSDSteps {
-   vector<double> msd_value;
-};
-
-struct COMSteps {
-   vector<threevector> COM_value;
-};
-
 struct TimeStep {
    vector<threevector> ppp;
    vector<threevector> ppp_uw; //unwrapped
    vector<threevector> fff;
+   double MSD=-999;
+   vector<double> COM;
+   TimeStep() {
+      COM.push_back(0);
+      COM.push_back(0);
+      COM.push_back(0);
+   }
 };
 
 struct atomType {
@@ -29,8 +28,6 @@ struct atomType {
    string element,pseudopotential;
    double mass, valence;
    vector<TimeStep> timesteps;
-   MSDSteps MSD;
-   COMSteps COM;
    bool COM_already=false;
    atomType () {
       atomspertype=0; element="X  ";mass = 0.00; valence = 0.00; pseudopotential="garbage";
@@ -132,32 +129,24 @@ struct FileInfo {
    int calculate_COM(atomType *atoms) {
       if (atoms->COM_already) {return 0;}
       cout << "Calculating center of mass for " << atoms->element << ".\n"; 
+      
       double atomTotalMass = atoms->mass * atoms->atomspertype;
-      threevector thisCOM;
-      thisCOM.push_back(0);
-      thisCOM.push_back(0);
-      thisCOM.push_back(0);
+      double COMx,COMy,COMz = 0;
       for (unsigned t=0; t < ntimesteps-1; t++) { //for each timestep
-         thisCOM[0] = 0;
-         thisCOM[1] = 0;
-         thisCOM[2] = 0;
-         //for (unsigned i=0; i<atoms.size(); i++) {  // for each atom type
+         COMx = 0;
+         COMy = 0;
+         COMz = 0;
             vector<threevector> &r = atoms->timesteps[t].ppp_uw;
             for (unsigned a=0; a<r.size(); a++) { //for atom in ppp vector
-               for (int x=0; x<3; x++) {  //for each dimension (0=x,1=y,2=z) {
-                  thisCOM[x] += (atoms->mass * r[a][x]);
-               }
+               COMx +=  (atoms->mass * r[a][0]);
+               COMy +=  (atoms->mass * r[a][1]);
+               COMz +=  (atoms->mass * r[a][2]);
+               
             }
-         //}
-         thisCOM[0] /= atomTotalMass;
-         thisCOM[1] /= atomTotalMass;
-         thisCOM[2] /= atomTotalMass;
-         atoms->COM.COM_value.push_back(thisCOM);
-/* Write out every tenth center of mass
-         if (t%10==0) {
-            cout << atoms->COM.COM_value[t][0] << "\t" << atoms->COM.COM_value[t][1] << "\t" << atoms->COM.COM_value[t][2] << "\n" ;
-         }
-*/
+         atoms->timesteps[t].COM[0] = COMx / atomTotalMass;
+         atoms->timesteps[t].COM[1] = COMy / atomTotalMass;
+         atoms->timesteps[t].COM[2] = COMz / atomTotalMass;
+
       }
       atoms->COM_already=true;
 
@@ -192,10 +181,15 @@ struct FileInfo {
 };
 
 struct Configuration {
+   string tempstr;
+   
    bool msd;
    string msd_data_prefix;
-   string tempstr;
    vector<string> msd_atoms;
+
+   bool rdf;
+   string rdf_data_prefix;
+   vector<string> rdf_atoms;
    
    ofstream script_wrapper;
    string script_wrapper_location = "output/make_all_plots.sh";
@@ -204,12 +198,10 @@ struct Configuration {
    string log_file_location = "log";
   
    
-   Configuration() {
 //   script_wrapper.open(script_wrapper_location);
 //   script_wrapper << "#!/bin/sh\n";
 //   log.open(log_file_location);
 
-   }
 
    
 } config;
