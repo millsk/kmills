@@ -2,8 +2,9 @@
 #include "read_config.cpp"
 #include "utility_functions.h"
 
-#include "msd.cpp"
 
+#include "msd.cpp"
+#include "rdf.cpp"
 
 using namespace std;
 
@@ -26,9 +27,9 @@ int main() {
       mean_square_displacement(&v, &config);
    }
 
-// if (config.rdf) {
-//      radial_distribution(&v, &config);
-//   }
+ if (config.rdf) {
+      radial_distribution_function(&v, &config);
+   }
 
    config.script_wrapper.close();
    return 0;

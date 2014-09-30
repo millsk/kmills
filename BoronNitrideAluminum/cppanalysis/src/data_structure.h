@@ -27,7 +27,7 @@ struct atomType {
    int atomspertype, sindex, eindex;
    string element,pseudopotential;
    double mass, valence;
-   vector<TimeStep> timesteps;
+   vector<TimeStep> timesteps; //holds all time dependent data
    bool COM_already=false;
    atomType () {
       atomspertype=0; element="X  ";mass = 0.00; valence = 0.00; pseudopotential="garbage";
@@ -190,6 +190,9 @@ struct Configuration {
    bool rdf;
    string rdf_data_prefix;
    vector<string> rdf_atoms;
+   int rdf_bins;
+   bool rdf_cut_half_lv;
+   string rdf_plot_type;   
    
    ofstream script_wrapper;
    string script_wrapper_location = "output/make_all_plots.sh";
@@ -198,9 +201,6 @@ struct Configuration {
    string log_file_location = "log";
   
    
-//   script_wrapper.open(script_wrapper_location);
-//   script_wrapper << "#!/bin/sh\n";
-//   log.open(log_file_location);
 
 
    

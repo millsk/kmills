@@ -35,6 +35,9 @@ void parse_inputfile(Configuration& config, const Node& node) {
     
    parse(plots, "rdf", config.rdf);
    parse(plots, "rdf_data_prefix", config.rdf_data_prefix);
+   parse(plots, "rdf_bins",config.rdf_bins);
+   parse(plots, "rdf_cut_half_lv",config.rdf_cut_half_lv);
+   parse(plots, "rdf_plot_type",config.rdf_plot_type);
    parse(plots, "rdf_atoms", config.tempstr);
       config.rdf_atoms = str2vec(config.tempstr);
 }
