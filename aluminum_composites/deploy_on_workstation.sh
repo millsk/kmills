@@ -1,12 +1,11 @@
 #!/bin/bash
 
-
 user=kmills
 ws=mcs$1
 local_dir=$2
 echo $3
 remote_binary=/home/kmills/bin/vasp
-remote_dir='~/BNAl/'
+remote_dir='~/computations/'
 
 
 if [[ ! "x"$3 == "x" ]]; then
