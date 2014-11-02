@@ -6,10 +6,10 @@
 
 
 #CHANGE THESE
-bond_length=1.89
-atoms="Si   C"
-shiftx=15
-shifty=15
+bond_length=1.818
+atoms="N Al"
+shiftx=20
+shifty=20
 POSCAR="POSCAR"
 
 
