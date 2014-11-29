@@ -7,7 +7,7 @@ atomtype2=$4
 shiftx=15
 shifty=15
 
-potcar_dir='/home/kyle/Work/kmills/POTCAR'
+potcar_dir='/home/kmills/Work/kmills/POTCAR'
 
 system_name="${n}-${m}_${atomtype1}${atomtype2}NT"
 
