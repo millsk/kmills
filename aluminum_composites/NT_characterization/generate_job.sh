@@ -92,7 +92,7 @@ rm *.tmp
 
 rm temp_vmdPOSCAR
 cd ..
-sh deploy.sh 11 $system_name 2
+sh deploy.sh 11 $system_name 1
 
 
 
