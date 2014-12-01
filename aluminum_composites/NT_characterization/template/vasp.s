@@ -1,17 +1,23 @@
-#!/bin/sh 
-#$ -S /bin/bash 
-#$ -cwd 
-#$ -N undoped_MD
-#$ -l h_stack=2G
-#$ -j y  
-#$ -l h_vmem=8G
-#$ -l h_rt=47:00:00
-#$ -pe ompi* 80
-#$ -R y
-	
-current_directory=`pwd`
+#!/bin/bash
+#PBS -l walltime=72:00:00
+#PBS -l pmem=8000mb
+#PBS -r n
+#PBS -l procs=4
+#PBS -M kyle.mills@uoit.net
+
+#PBS -N "!!SYSTEMNAME!!"
+
+cd $PBS_O_WORKDIR
+echo -n "START " > datefile
+date >> datefile
+
+touch WAVECAR
+touch CHGCAR
 
 module purge
-module load intel openmpi/intel
-mpirun ~/bin/vasp > log 
- 
+module load intel-2011
+
+dir=`pwd`
+ndir="${dir}_1"
+
+mpiexec /global/software/VASP5/vasp-5.3.3/vasp > ./log 

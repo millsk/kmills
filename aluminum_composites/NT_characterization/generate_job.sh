@@ -22,6 +22,7 @@ cp ../template/KPOINTS .
 cp ../template/clean.sh .
 cp ../template/plot.sh .
 cp ../template/vasp.s .
+sed -i "s/!!SYSTEMNAME!!/$system_name/g" vasp.s
 
 #Make the POTCAR
 cat $potcar_dir/$atomtype1/POTCAR $potcar_dir/$atomtype2/POTCAR > POTCAR
@@ -92,7 +93,7 @@ rm *.tmp
 
 rm temp_vmdPOSCAR
 cd ..
-bash deploy.sh $6 $system_name 1
+bash deploy_orcinus.sh $6 $system_name 
 
 
 

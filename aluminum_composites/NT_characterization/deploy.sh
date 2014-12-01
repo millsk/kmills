@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 user=kmills
 ws=mcs$1
 local_dir=$2
@@ -28,15 +27,16 @@ if [[ ! "x"$ws == "xmcs11" ]]; then
 fi
 
 
-$echo "setting NPAR=2 in INCAR"
-ssh $user@$ws  "cd $remote_dir/$local_dir && sed -i 's|NPAR.*|NPAR=2|g' INCAR "
+#$echo "setting NPAR=2 in INCAR"
+ssh $user@$ws  "cd $remote_dir/$local_dir "
 
 $echo "Logging in to remote machine $ws as $user "
 ssh $user@$ws "sh -c '
 $echo changing to $remote_dir/$local_dir;
 cd $remote_dir/$local_dir && 
-nohup $niceness $remote_binary > log 2>/dev/null &  
-nohup bash ~/bin/monitor.sh > /dev/null 2>1 &  '"
+nohup mpirun -n 1 $remote_binary >> log 2>&1 &
+sleep 0.5
+'"
 
 
 $echo "Starting VASP on $ws"

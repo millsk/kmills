@@ -20,7 +20,7 @@ NSW = 20000
 NBLOCK = 1
 KBLOCK = 100  
 
-NPAR=1
+NPAR=2
 
 #SMASS = 0.5        # mass of the thermostat
 POTIM = 0.5473119623468868  #timestep
