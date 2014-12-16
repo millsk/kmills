@@ -293,8 +293,8 @@ display cuestart   0.500000
 display cueend     10.000000
 display cuedensity 0.320000
 display cuemode    Exp2
-mol new /home/kmills/Work/kmills/aluminum_composites/Krasheninnikov_paper/BNAl/generate/POSCAR_Al type POSCAR first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
-mol addfile /home/kmills/Work/kmills/aluminum_composites/Krasheninnikov_paper/BNAl/generate/POSCAR_BN type POSCAR first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol new /home/kmills/work/kmills/aluminum_composites/Krasheninnikov_paper/BNAl/generate/POSCAR_Al type POSCAR first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol addfile /home/kmills/work/kmills/aluminum_composites/Krasheninnikov_paper/BNAl/generate/POSCAR_BN type POSCAR first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
 mol delrep 0 top
 mol representation VDW 0.300000 12.000000
 mol color Name
@@ -334,7 +334,7 @@ mol rename top POSCAR_Al
 set viewpoints([molinfo top]) {{{1 0 0 -5.368} {0 1 0 -3.09922} {0 0 1 -4} {0 0 0 1}} {{-0.873627 0.471085 0.121837 0} {-0.0412438 0.177802 -0.983195 0} {-0.484834 -0.863981 -0.135902 0} {0 0 0 1}} {{0.0670294 0 0 0} {0 0.0670294 0 0} {0 0 0.0670294 0} {0 0 0 1}} {{1 0 0 -0.14} {0 1 0 -0.21} {0 0 1 0} {0 0 0 1}}}
 lappend viewplist [molinfo top]
 # done with molecule 0
-mol new /home/kmills/Work/kmills/aluminum_composites/Krasheninnikov_paper/BNAl/generate/POSCAR_BN type POSCAR first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
+mol new /home/kmills/work/kmills/aluminum_composites/Krasheninnikov_paper/BNAl/generate/POSCAR_BN type POSCAR first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
 mol delrep 0 top
 mol representation VDW 0.300000 12.000000
 mol color Name
