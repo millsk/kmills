@@ -1,4 +1,4 @@
-from ase.lattice.surface import fcc111
+from ase.lattice.surface import fcc111,hcp0001
 from ase.lattice.hexagonal import *
 from ase import io
 import math
@@ -7,20 +7,18 @@ lattice_constant_Al = 4.050
 a_lattice_constant_BN = 2.5040
 c_lattice_constant_BN = 6.6612
 
-slab = fcc111('Al',size=(7,6,3), a=lattice_constant_Al, orthogonal=True)
+slab = fcc111('Al',size=(7,7,3), a=lattice_constant_Al, orthogonal=False,vacuum=20.0)
+bn= hcp0001('B',size=(8,8,2), a=a_lattice_constant_BN, c=0.0000001, vacuum=20.0)
+bn.translate([0,0,-5])
 
-#bn = Hexagonal('B',size=(8,8,1), latticeconstant = {'a':1.446, 'c':1.446})
-#bn = fcc111('B',size=(8,8,1), a=1.5*a_lattice_constant_BN, vacuum=6.0,orthogonal=True)
+num_each = bn.get_number_of_atoms() / 2
 
-#Need to somehow get orthographic coordinates for bn sheet
-
-bn = Graphene(symbol='B', size=(8,8,3), latticeconstant={'a':a_lattice_constant_BN, 'c': c_lattice_constant_BN})
-
-
-io.write('POSCAR_BN',bn,format='xyz')
-io.write('POSCAR_Al',slab,format='xyz')
+bn.set_atomic_numbers([5]*num_each + [7]*num_each)
 
 
 
-io.write('POSCAR_BN',bn)
-io.write('POSCAR_Al',slab)
+
+bn.extend(slab)
+
+
+io.write('POSCAR',bn)
