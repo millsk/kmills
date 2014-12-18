@@ -1,11 +1,11 @@
 #!/bin/bash
-#PBS -l walltime=72:00:00
+#PBS -l walltime=24:00:00
 #PBS -l pmem=2000mb
 #PBS -r n
 #PBS -l procs=112
 #PBS -M kyle.mills@uoit.net
 
-#PBS -N "BNAl111_rel"
+#PBS -N "BN_only_BNAl111_rel"
 
 cd $PBS_O_WORKDIR
 echo -n "START " > datefile
