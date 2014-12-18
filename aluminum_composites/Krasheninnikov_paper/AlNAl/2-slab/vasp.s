@@ -5,7 +5,7 @@
 #PBS -l procs=112
 #PBS -M kyle.mills@uoit.net
 
-#PBS -N "AlAl111_rel"
+#PBS -N "slab_AlAl111_rel"
 
 cd $PBS_O_WORKDIR
 echo -n "START " > datefile

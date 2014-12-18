@@ -1,4 +1,4 @@
-SYSTEM = AlNAl(111)
+SYSTEM = AlNAl(111)_slab
 
 
  NCORE = 16 			# ~ sqrt(# of cores) or (# cores per node).
