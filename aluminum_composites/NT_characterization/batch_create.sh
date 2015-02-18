@@ -1,22 +1,18 @@
-sh generate_job.sh 6 0 Al N 1.890
-sh generate_job.sh 5 0 Al N 1.890
-sh generate_job.sh 10 0 Al N 1.890
-sh generate_job.sh 12 0 Al N 1.890
-
-sh generate_job.sh 6 6 Al N 1.890
-sh generate_job.sh 5 5 Al N 1.890
-sh generate_job.sh 10 10 Al N 1.890
-sh generate_job.sh 12 12 Al N 1.890
 
 
-#sh generate_job.sh 6 3 Al N 1.890
-#sh generate_job.sh 4 2 Al N 1.890
-#sh generate_job.sh 10 5 Al N 1.890
-#sh generate_job.sh 12 6 Al N 1.890
+
+#Al N:      bl = 1.890
+#B  N:      bl = 1.446
+
+
+for n in {2..14..2}; do
+  sh generate_job.sh $n 0 B N 1.446 1  
+  sh generate_job.sh $n $n B N 1.446 1  
+  sh generage_job.sh $n $(($n/2)) B N 1.446 1 
+done
 
 
 
 
 
 
-#
