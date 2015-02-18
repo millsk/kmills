@@ -92,10 +92,11 @@ cp NN POSCAR
 
 
 rm *.tmp
-
+rm NN
 rm temp_vmd.tcl
 rm temp_vmdPOSCAR
 cd ../..
+echo "iteration done"$(pwd)
 #bash deploy_orcinus.sh $6 $system_name 
 
 
