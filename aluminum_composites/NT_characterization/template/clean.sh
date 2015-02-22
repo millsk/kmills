@@ -2,7 +2,7 @@
 
 mkdir protect
 
-for file in clean.sh POSCAR POTCAR KPOINTS vasp.s INCAR plot*
+for file in clean.sh *.bindat POSCAR POTCAR KPOINTS vasp*.s INCAR plot*
 do
    mv $file protect
 done

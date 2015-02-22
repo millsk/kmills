@@ -24,6 +24,7 @@ cp ../../template/KPOINTS .
 cp ../../template/clean.sh .
 cp ../../template/plot.sh .
 cp ../../template/vasp.s .
+cp ../../template/vasp.bugaboo.s .
 cp ../../template/vdw_kernel.bindat .
 sed -i "s/!!SYSTEMNAME!!/$system_name/g" vasp.s
 
@@ -97,6 +98,9 @@ rm temp_vmd.tcl
 rm temp_vmdPOSCAR
 cd ../..
 echo "iteration done"$(pwd)
+
+echo ' for d in $(ls -d *); do cd $d; qsub vasp.s; cd ..; done ' > $jobdir/qsub.sh
+
 #bash deploy_orcinus.sh $6 $system_name 
 
 
