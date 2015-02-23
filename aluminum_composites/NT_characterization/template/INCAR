@@ -4,7 +4,7 @@ SYSTEM = !!SYSTEMNAME!!_nanotube
  NCORE = 16 			# ~ sqrt(# of cores) or (# cores per node).
  NWRITE = 3
 
- LVTO = .TRUE.     # write the locpot file (local potential)
+ LVTOT = .TRUE.     # write the locpot file (local potential)
 
  NSW     =   10000 		# 10000 steps
  ISIF    =   3   		# tells you what is and is not allowed to move
