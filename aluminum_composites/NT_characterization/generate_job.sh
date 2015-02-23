@@ -27,6 +27,7 @@ cp ../../template/vasp.s .
 cp ../../template/vasp.bugaboo.s .
 cp ../../template/vdw_kernel.bindat .
 sed -i "s/!!SYSTEMNAME!!/$system_name/g" vasp.s
+sed -i "s/!!SYSTEMNAME!!/$system_name/g" vasp.bugaboo.s
 
 #Make the POTCAR
 cat $potcar_dir/$atomtype1/POTCAR $potcar_dir/$atomtype2/POTCAR > POTCAR
@@ -102,6 +103,4 @@ echo "iteration done"$(pwd)
 echo ' for d in $(ls -d *); do cd $d; qsub vasp.s; cd ..; done ' > $jobdir/qsub.sh
 
 #bash deploy_orcinus.sh $6 $system_name 
-
-
 
