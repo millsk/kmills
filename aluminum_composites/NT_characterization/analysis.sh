@@ -1,6 +1,15 @@
 #!/bin/bash
 
 
+echo -e "Make sure you're currently in the root directory of an NT project.  An 'ls' should show a bunch of directories, one for each nanotube VASP run.  Just to be sure, I'll execute ls for you:\n\n"
+pwd
+ls
+echo -e "\n"
+echo "How does this look?  Kill within 5 seconds if you need to change directories."
+
+
+sleep 6
+
 
 function  NTdiameter() {
    awk '
@@ -24,4 +33,12 @@ function  NTdiameter() {
 
    ' CONTCAR CONTCAR
 }
+
+
+
+
+
+
+
+
 
