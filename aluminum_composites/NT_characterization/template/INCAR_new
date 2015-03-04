@@ -4,10 +4,10 @@ SYSTEM = !!SYSTEMNAME!!_nanotube
  NCORE = 16 			# ~ sqrt(# of cores) or (# cores per node).
  NWRITE = 3
 
- LVTOT = .TRUE.     # write the locpot file (local potential)
+ LVTOT	=   .TRUE.		# write the locpot file (local potential)
 
  NSW     =   10000 		# 10000 steps
- ISIF    =   3   		# tells you what is and is not allowed to move
+ ISIF    =   2   		# tells you what is and is not allowed to move
  PREC    =   High
 
  NELM    =   40 		# max number of SCF steps (I think, confirm this)
@@ -37,14 +37,14 @@ SYSTEM = !!SYSTEMNAME!!_nanotube
  # All require the vdw_kernel.bindat file as well. 
  # Do not forget it, or you will waste a lot of CPU time.
  # for vdW-DF, use the following 3 lines
- #GGA = RE
- #LUSE_VDW = .TRUE.
- #AGGAC = 0.0000
- # for vdW-DF2, use the following 4 instead
- GGA = ML
+ GGA = RE
  LUSE_VDW = .TRUE.
- Zab_vdW = -1.8867
  AGGAC = 0.0000
+ # for vdW-DF2, use the following 4 instead
+ #GGA = ML
+ #LUSE_VDW = .TRUE.
+ #Zab_vdW = -1.8867
+ #AGGAC = 0.0000
 
  # for optB88-vdW, use the following 5 
  #GGA = BO

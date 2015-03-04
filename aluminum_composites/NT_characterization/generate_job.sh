@@ -7,22 +7,27 @@ atomtype2=$4
 shiftx=15
 shifty=15
 
-potcar_dir='/home/kmills/Work/kmills/POTCAR'
+jobdir='jobs/'
+potcar_dir='/home/kmills/work/kmills/POTCAR'
 
 system_name="${n}-${m}_${atomtype1}${atomtype2}NT"
 
 echo "Generating $system_name"
 
-mkdir $system_name
-cd $system_name
+mkdir $jobdir
+mkdir ${jobdir}${system_name}
+cd ${jobdir}${system_name}
 #Copy over all the files we need, change system name in INCAR
-cp ../template/INCAR .
+cp ../../template/INCAR .
 sed -i "s/!!SYSTEMNAME!!/$system_name/g" INCAR
-cp ../template/KPOINTS .
-cp ../template/clean.sh .
-cp ../template/plot.sh .
-cp ../template/vasp.s .
+cp ../../template/KPOINTS .
+cp ../../template/clean.sh .
+cp ../../template/plot.sh .
+cp ../../template/vasp.s .
+cp ../../template/vasp.bugaboo.s .
+cp ../../template/vdw_kernel.bindat .
 sed -i "s/!!SYSTEMNAME!!/$system_name/g" vasp.s
+sed -i "s/!!SYSTEMNAME!!/$system_name/g" vasp.bugaboo.s
 
 #Make the POTCAR
 cat $potcar_dir/$atomtype1/POTCAR $potcar_dir/$atomtype2/POTCAR > POTCAR
@@ -30,13 +35,12 @@ cat $potcar_dir/$atomtype1/POTCAR $potcar_dir/$atomtype2/POTCAR > POTCAR
 #Make the VMD Script
 echo "
 nanotube -l $length -n $n -m $m -cc $bondlength 
-wait 2
+wait 1
 animate write POSCAR {temp_vmdPOSCAR} beg 0 end 0 skip 1 0
 exit
 " > temp_vmd.tcl
 #Run the VMD script
 vmd -e temp_vmd.tcl
-rm temp_vmd.tcl
 
 
 
@@ -90,10 +94,13 @@ cp NN POSCAR
 
 
 rm *.tmp
-
+rm NN
+rm temp_vmd.tcl
 rm temp_vmdPOSCAR
-cd ..
-bash deploy_orcinus.sh $6 $system_name 
+cd ../..
+echo "iteration done"$(pwd)
 
+echo ' for d in $(ls -d *); do cd $d; qsub vasp.s; cd ..; done ' > $jobdir/qsub.sh
 
+#bash deploy_orcinus.sh $6 $system_name 
 
