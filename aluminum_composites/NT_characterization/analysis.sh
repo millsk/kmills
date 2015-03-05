@@ -25,3 +25,15 @@ function  NTdiameter() {
    ' CONTCAR CONTCAR
 }
 
+
+
+function HOMOLUMO () {
+
+pcregrep -M '2\.00000.*(\n)*.*2\.00000.*(\n)*.*0\.00000.*(\n)*.*0\.00000' OUTCAR | tail -4 | head -3 | tail -2 | awk '{print $1,"\t",$2,"\t",$3}'
+
+}
+
+
+
+
+for d in $(ls -d *AlNNT*); do echo $d; cd $d; NTdiameter; HOMOLUMO; cd ..; echo -e "\n\n\n"; done
