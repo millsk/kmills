@@ -1,0 +1,59 @@
+SYSTEM = BNAl(111)
+
+
+ NCORE = 16 			# ~ sqrt(# of cores) or (# cores per node).
+ NWRITE = 3
+
+ LVTOT	=   .TRUE.		# write the locpot file (local potential)
+
+
+
+ NSW     =   10000 		# 10000 steps
+ ISIF    =   2   		# tells you what is and is not allowed to move
+ PREC    =   High
+
+ NELM    =   40 		# max number of SCF steps (I think, confirm this)
+ NELMIN  =   4 			# min number
+ ISMEAR  =   0 			# FD smearing
+ SIGMA   =   0.05 		# in eV
+ ISPIN   =   1
+ IALGO   =   48
+ LREAL   =   A
+
+
+
+#RELAXATION/MD
+
+
+ IBRION  =   2 			# 2:relaxation, 0:MD
+
+#for MD only: 
+ #SMASS = 0.5			#mass of the thermostat
+ #POTIM = 0.5473119623468868  	#timestep (femtoseconds)
+ #TEBEG = 1000     		# start temperature
+ #ISMEAR = -1
+ #SIGMA = 0.08617343 		#temperature in eV 
+
+
+##VAN DER WAALS:
+
+ # There are several types of vdW. 
+ # All require the vdw_kernel.bindat file as well. 
+ # Do not forget it, or you will waste a lot of CPU time.
+ # for vdW-DF, use the following 3 lines
+ GGA = RE
+ LUSE_VDW = .TRUE.
+ AGGAC = 0.0000
+ # for vdW-DF2, use the following 4 instead
+ #GGA = ML
+ #LUSE_VDW = .TRUE.
+ #Zab_vdW = -1.8867
+ #AGGAC = 0.0000
+
+ # for optB88-vdW, use the following 5 
+ #GGA = BO
+ #PARAM1 = 0.1833333333
+ #PARAM2 = 0.2200000000
+ #LUSE_VDW = .TRUE.
+ #AGGAC = 0.0000
+ 
