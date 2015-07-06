@@ -15,9 +15,6 @@ polygon_sides = 6  #hexagon
 
 poscar = ase.io.vasp.read_vasp(filename)
 
-for i in dir(poscar):
-   print i
-
 cell = poscar.get_cell()
 
 #the lattice vectors
